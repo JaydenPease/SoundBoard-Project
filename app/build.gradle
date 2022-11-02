@@ -17,9 +17,9 @@ android {
     }
 
     // Uncomment to enable View Binding
-//    buildFeatures {
-//        viewBinding true
-//    }
+    buildFeatures {
+        viewBinding true
+    }
 
     buildTypes {
         release {

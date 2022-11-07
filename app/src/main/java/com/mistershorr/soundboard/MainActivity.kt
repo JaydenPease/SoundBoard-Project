@@ -4,8 +4,11 @@ import android.media.AudioManager
 import android.media.SoundPool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,18 +20,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     
     lateinit var soundPool : SoundPool
-    var ANote = 0
-    var BbNote = 0
-    var BNote = 0
-    var CNote = 0
-    var CsNote = 0
-    var DNote = 0
-    var DsNote = 0
-    var ENote = 0
-    var FNote = 0
-    var FsNote = 0
-    var GNote = 0
-    var GsNote = 0
+    lateinit var song: MutableList<Note>
+    var ANote = 1
+    var BbNote = 2
+    var BNote = 3
+    var CNote = 4
+    var CsNote = 5
+    var DNote = 6
+    var DsNote = 7
+    var ENote = 8
+    var FNote = 9
+    var FsNote = 10
+    var GNote = 11
+    var GsNote = 12
+    var LowGNote = 13
+
+    var noteMap = HashMap<String, Int>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +46,10 @@ class MainActivity : AppCompatActivity() {
 
 
         initializeSoundPool()
+        loadSong()
         setListeners()
+
+        playSong(song)
     }
 
     private fun setListeners() {
@@ -57,6 +67,9 @@ class MainActivity : AppCompatActivity() {
         binding.buttonMainG.setOnClickListener(soundBoardListener)
         binding.buttonMainGs.setOnClickListener(soundBoardListener)
         binding.buttonMainLg.setOnClickListener((soundBoardListener))
+
+        binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
+
     }
 
 
@@ -81,6 +94,29 @@ class MainActivity : AppCompatActivity() {
         FsNote = soundPool.load(this, R.raw.scalefs, 1)
         GNote = soundPool.load(this, R.raw.scaleg, 1)
         GsNote = soundPool.load(this, R.raw.scalegs, 1)
+        LowGNote = soundPool.load(this, R.raw.scalelowg, 1)
+
+        // Maps use key-value pairs (just like the Bundle)
+        noteMap.put("A", ANote)
+        //kotlin lets you use array-like assignments
+        noteMap["Bb"] = BbNote
+        noteMap["B"] = BNote
+        noteMap["C"] = CNote
+        noteMap["Cs"] = CsNote
+        noteMap["D"] = DNote
+        noteMap["Ds"] = DsNote
+        noteMap["E"] = ENote
+        noteMap["F"] = FNote
+        noteMap["Fs"] = FsNote
+        noteMap["G"] = GNote
+        noteMap["Gs"] = GsNote
+        noteMap["LG"] = LowGNote
+
+    }
+
+    private fun playNote(note: String) {
+        // ?: is the elvis operator. it lets you provide a default value if the value is null
+        playNote(noteMap[note] ?: 0)
     }
 
     private fun playNote(noteId : Int) {
@@ -102,12 +138,25 @@ class MainActivity : AppCompatActivity() {
                 R.id.button_main_fs -> playNote(FsNote)
                 R.id.button_main_g -> playNote(GNote)
                 R.id.button_main_gs -> playNote(GsNote)
+                R.id.button_main_lg -> playNote(LowGNote)
+
+                R.id.button_main_playSong -> playSong(song)
             }
         }
 
     }
 
     private fun playSong(song: List<Note>) {
+
+        var i:Int = 0
+        while(i < song.size) {
+            playNote(song[i].note)
+            delay(song[i].duration)
+            i++
+
+        }
+
+
         //loop through a list of notes
           //play the note
                 //note you get is a string
@@ -122,5 +171,25 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
+    }
+
+    private fun loadSong() {
+
+        val inputStream = resources.openRawResource(R.raw.song)
+
+        val jsonString = inputStream.bufferedReader().use {
+
+            it.readText()
+        }
+        Log.d(TAG, "onCreate: $jsonString")
+
+
+
+
+        val gson = Gson()
+
+
+        val type = object : TypeToken<List<Note>>() { }.type
+        song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
     }
 }

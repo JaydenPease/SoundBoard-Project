@@ -10,6 +10,9 @@ import android.widget.Button
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         loadSong()
         setListeners()
 
-        playSong(song)
     }
 
     private fun setListeners() {
@@ -140,20 +142,31 @@ class MainActivity : AppCompatActivity() {
                 R.id.button_main_gs -> playNote(GsNote)
                 R.id.button_main_lg -> playNote(LowGNote)
 
-                R.id.button_main_playSong -> playSong(song)
+                R.id.button_main_playSong -> {
+                    //launch a coroutine
+                    GlobalScope.launch {
+                        playSong(song)
+                    }
+                }
             }
         }
 
     }
 
-    private fun playSong(song: List<Note>) {
+    // suspend keyword marks the function to be used in a coroutine
+    // (so that the default delay function can work)
+    private suspend fun playSong(song: List<Note>) {
 
-        var i:Int = 0
-        while(i < song.size) {
+
+
+        //0..10 - 0 to 10 inclusive both sides
+        //0 until 10 - 0 to 9
+        //i in song.indices - goes through the entire list
+        //for(item in list) is the enhanced for loop
+        //java is superior to kotlin because you can go BACKWARDS, SIDEWAYS, and ALL WAYS
+        for(i in song.indices) {
             playNote(song[i].note)
             delay(song[i].duration)
-            i++
-
         }
 
 
@@ -164,14 +177,7 @@ class MainActivity : AppCompatActivity() {
            //delay for the delay
     }
 
-    private fun delay(time: Long) {
-        try{
-            Thread.sleep(time)
-        } catch(e: InterruptedException) {
-            e.printStackTrace()
-        }
 
-    }
 
     private fun loadSong() {
 

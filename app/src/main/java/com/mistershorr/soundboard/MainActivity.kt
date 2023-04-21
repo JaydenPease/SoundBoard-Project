@@ -1,3 +1,5 @@
+//finish soundpool loading thing
+
 package com.mistershorr.soundboard
 
 import android.media.AudioManager

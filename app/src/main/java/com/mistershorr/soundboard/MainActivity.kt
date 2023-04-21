@@ -21,22 +21,35 @@ class MainActivity : AppCompatActivity() {
 
     //instance variable for the view binding
     private lateinit var binding: ActivityMainBinding
-    
+
+    var noteValues = NoteValues()
+
     lateinit var soundPool : SoundPool
     lateinit var song: MutableList<Note>
-    var ANote = 1
-    var BbNote = 2
-    var BNote = 3
-    var CNote = 4
-    var CsNote = 5
-    var DNote = 6
-    var DsNote = 7
-    var ENote = 8
-    var FNote = 9
-    var FsNote = 10
-    var GNote = 11
-    var GsNote = 12
-    var LowGNote = 13
+
+    var songBeingWritten: ArrayList<Note> = ArrayList()
+
+
+    var currentlyWriting: Boolean = false
+
+//    var ANote = 1
+//    var BbNote = 2
+//    var BNote = 3
+//    var CNote = 4
+//    var CsNote = 5
+//    var DNote = 6
+//    var DsNote = 7
+//    var ENote = 8
+//    var FNote = 9
+//    var FsNote = 10
+//    var GNote = 11
+//    var GsNote = 12
+//    var LowGNote = 13
+
+
+
+
+
 
     var noteMap = HashMap<String, Int>()
 
@@ -51,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         initializeSoundPool()
         loadSong()
         setListeners()
+
+
 
     }
 
@@ -72,6 +87,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
 
+
+        binding.buttonMainStartStopWriting.setOnClickListener {
+            currentlyWriting = !currentlyWriting
+        }
+
+
     }
 
 
@@ -84,19 +105,20 @@ class MainActivity : AppCompatActivity() {
 //        soundPool.setOnLoadCompleteListener(SoundPool.OnLoadCompleteListener { soundPool, sampleId, status ->
 //           // isSoundPoolLoaded = true
 //        })
-        ANote = soundPool.load(this, R.raw.scalea, 1)
-        BbNote = soundPool.load(this, R.raw.scalebb, 1)
-        BNote = soundPool.load(this, R.raw.scaleb, 1)
-        CNote =  soundPool.load(this, R.raw.scalec, 1)
-        CsNote = soundPool.load(this, R.raw.scalecs, 1)
-        DNote = soundPool.load(this, R.raw.scaled, 1)
-        DsNote = soundPool.load(this, R.raw.scaleds, 1)
-        ENote = soundPool.load(this, R.raw.scalee, 1)
-        FNote = soundPool.load(this, R.raw.scalef, 1)
-        FsNote = soundPool.load(this, R.raw.scalefs, 1)
-        GNote = soundPool.load(this, R.raw.scaleg, 1)
-        GsNote = soundPool.load(this, R.raw.scalegs, 1)
-        LowGNote = soundPool.load(this, R.raw.scalelowg, 1)
+        noteValues.a0 = soundPool.load(this, R.raw.a0, 1)
+        noteValues.a1 = soundPool.load(this, R.raw.a1, 1)
+
+//        BNote = soundPool.load(this, R.raw.scaleb, 1)
+//        CNote =  soundPool.load(this, R.raw.scalec, 1)
+//        CsNote = soundPool.load(this, R.raw.scalecs, 1)
+//        DNote = soundPool.load(this, R.raw.scaled, 1)
+//        DsNote = soundPool.load(this, R.raw.scaleds, 1)
+//        ENote = soundPool.load(this, R.raw.scalee, 1)
+//        FNote = soundPool.load(this, R.raw.scalef, 1)
+//        FsNote = soundPool.load(this, R.raw.scalefs, 1)
+//        GNote = soundPool.load(this, R.raw.scaleg, 1)
+//        GsNote = soundPool.load(this, R.raw.scalegs, 1)
+//        LowGNote = soundPool.load(this, R.raw.scalelowg, 1)
 
         // Maps use key-value pairs (just like the Bundle)
         noteMap.put("A", ANote)
@@ -127,6 +149,60 @@ class MainActivity : AppCompatActivity() {
 
     private inner class SoundBoardListener : View.OnClickListener {
         override fun onClick(v: View?) {
+            if(currentlyWriting) {
+
+                when(v?.id) {
+                    R.id.button_main_a -> {
+                        playNote(ANote)
+                        songBeingWritten.add(Note("A", 500))
+                    }
+                    R.id.button_main_bb -> {
+                        playNote(BbNote)
+                        songBeingWritten.add(Note("Bb", 500))
+                    }
+                    R.id.button_main_b -> {
+                        playNote(BNote)
+                        songBeingWritten.add(Note("B", 500))
+                    }
+                    R.id.button_main_c -> {
+                        playNote(CNote)
+                        songBeingWritten.add(Note("C", 500))
+                    }
+                    R.id.button_main_cs -> {
+                        playNote(CsNote)
+
+                    }
+                    R.id.button_main_d -> {
+                        playNote(DNote)
+                    }
+                    R.id.button_main_ds -> {
+                        playNote(DsNote)
+                    }
+                    R.id.button_main_e -> {
+                        playNote(ENote)
+                    }
+                    R.id.button_main_f -> {
+                        playNote(FNote)
+                    }
+                    R.id.button_main_fs -> {
+                        playNote(FsNote)
+                    }
+                    R.id.button_main_g -> {
+                        playNote(GNote)
+                    }
+                    R.id.button_main_gs -> {
+                        playNote(GsNote)
+                    }
+                    R.id.button_main_lg -> {
+                        playNote(LowGNote)
+                    }
+
+
+                }
+
+            }
+            else {
+
             when(v?.id) {
                 R.id.button_main_a -> playNote(ANote)
                 R.id.button_main_bb -> playNote(BbNote)
@@ -148,6 +224,7 @@ class MainActivity : AppCompatActivity() {
                         playSong(song)
                     }
                 }
+            }
             }
         }
 

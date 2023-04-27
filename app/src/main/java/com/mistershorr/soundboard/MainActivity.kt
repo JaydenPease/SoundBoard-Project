@@ -1,9 +1,11 @@
-//finish octave changing
+//add a system for different note durations. then, add the song writing and playing system.
 
 package com.mistershorr.soundboard
 
+import android.annotation.SuppressLint
 import android.media.AudioManager
 import android.media.SoundPool
+import android.os.Build.VERSION_CODES.N
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -53,30 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setListeners() {
-        val soundBoardListener = SoundBoardListener()
-        binding.buttonMainA.setOnClickListener(soundBoardListener)
-        binding.buttonMainAsbb.setOnClickListener(soundBoardListener)
-        binding.buttonMainB.setOnClickListener(soundBoardListener)
-        binding.buttonMainC.setOnClickListener(soundBoardListener)
-        binding.buttonMainCsdb.setOnClickListener(soundBoardListener)
-        binding.buttonMainD.setOnClickListener(soundBoardListener)
-        binding.buttonMainDseb.setOnClickListener(soundBoardListener)
-        binding.buttonMainE.setOnClickListener(soundBoardListener)
-        binding.buttonMainF.setOnClickListener(soundBoardListener)
-        binding.buttonMainFsgb.setOnClickListener(soundBoardListener)
-        binding.buttonMainG.setOnClickListener(soundBoardListener)
-        binding.buttonMainGsab.setOnClickListener(soundBoardListener)
 
-        binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
-
-
-        binding.buttonMainStartStopWriting.setOnClickListener {
-            currentlyWriting = !currentlyWriting
-        }
-
-
-    }
 
 
 
@@ -110,78 +89,331 @@ class MainActivity : AppCompatActivity() {
         override fun onClick(v: View?) {
             if(currentlyWriting) {
 
-//                when(v?.id) {
-//                    R.id.button_main_a -> {
-//                        playNote(ANote)
-//                        songBeingWritten.add(Note("A", 500))
-//                    }
-//                    R.id.button_main_bb -> {
-//                        playNote(BbNote)
-//                        songBeingWritten.add(Note("Bb", 500))
-//                    }
-//                    R.id.button_main_b -> {
-//                        playNote(BNote)
-//                        songBeingWritten.add(Note("B", 500))
-//                    }
-//                    R.id.button_main_c -> {
-//                        playNote(CNote)
-//                        songBeingWritten.add(Note("C", 500))
-//                    }
-//                    R.id.button_main_cs -> {
-//                        playNote(CsNote)
-//
-//                    }
-//                    R.id.button_main_d -> {
-//                        playNote(DNote)
-//                    }
-//                    R.id.button_main_ds -> {
-//                        playNote(DsNote)
-//                    }
-//                    R.id.button_main_e -> {
-//                        playNote(ENote)
-//                    }
-//                    R.id.button_main_f -> {
-//                        playNote(FNote)
-//                    }
-//                    R.id.button_main_fs -> {
-//                        playNote(FsNote)
-//                    }
-//                    R.id.button_main_g -> {
-//                        playNote(GNote)
-//                    }
-//                    R.id.button_main_gs -> {
-//                        playNote(GsNote)
-//                    }
-//
-//
-//
-//                }
+                when(octave) {
+                    0 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a0)
+                                songBeingWritten.add(Note("a0", 500))
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb0)
+                                songBeingWritten.add(Note("asbb0", 500))
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b0)
+                                songBeingWritten.add(Note("b0", 500))
+                            }
+                        }
+                    }
+                    1 -> {
+                        when(v?.id) {
+                    R.id.button_main_a -> {
+                        playNote(noteValues.a1)
+                        songBeingWritten.add(Note("a1", 500))
+                    }
+                    R.id.button_main_asbb -> {
+                        playNote(noteValues.asbb1)
+                        songBeingWritten.add(Note("asbb1", 500))
+                    }
+                    R.id.button_main_b -> {
+                        playNote(noteValues.b1)
+                        songBeingWritten.add(Note("b1", 500))
+                    }
+                    R.id.button_main_c -> {
+                        playNote(noteValues.c1)
+                        songBeingWritten.add(Note("c1", 500))
+                    }
+                    R.id.button_main_csdb -> {
+                        playNote(noteValues.csdb1)
+                        songBeingWritten.add(Note("csdb1", 500))
+                    }
+                    R.id.button_main_d -> {
+                        playNote(noteValues.d1)
+                        songBeingWritten.add(Note("d1", 500))
+                    }
+                    R.id.button_main_dseb -> {
+                        playNote(noteValues.dseb1)
+                        songBeingWritten.add(Note("dseb1", 500))
+                    }
+                    R.id.button_main_e -> {
+                        playNote(noteValues.e1)
+                        songBeingWritten.add(Note("e1", 500))
+                    }
+                    R.id.button_main_f -> {
+                        playNote(noteValues.f1)
+                        songBeingWritten.add(Note("f1", 500))
+                    }
+                    R.id.button_main_fsgb -> {
+                        playNote(noteValues.fsgb1)
+                        songBeingWritten.add(Note("fsgb1", 500))
+                    }
+                    R.id.button_main_g -> {
+                        playNote(noteValues.g1)
+                        songBeingWritten.add(Note("g1", 500))
+                    }
+                    R.id.button_main_gsab -> {
+                        playNote(noteValues.gsab1)
+                        songBeingWritten.add(Note("gsab1", 500))
+                    }
+                }
+                    }
+                    2 -> {
+
+                    }
+                    3 -> {
+
+                    }
+                    4 -> {
+
+                    }
+                    5 -> {
+
+                    }
+                    6 -> {
+                        when(v?.id) {
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c6)
+                                songBeingWritten.add(Note("c6", 500))
+                            }
+                        }
+                    }
+                }
 
             }
             else {
 
-//            when(v?.id) {
-//                R.id.button_main_a -> playNote(ANote)
-//                R.id.button_main_bb -> playNote(BbNote)
-//                R.id.button_main_b -> playNote(BNote)
-//                R.id.button_main_c -> playNote(CNote)
-//                R.id.button_main_cs -> playNote(CsNote)
-//                R.id.button_main_d -> playNote(DNote)
-//                R.id.button_main_ds -> playNote(DsNote)
-//                R.id.button_main_e -> playNote(ENote)
-//                R.id.button_main_f -> playNote(FNote)
-//                R.id.button_main_fs -> playNote(FsNote)
-//                R.id.button_main_g -> playNote(GNote)
-//                R.id.button_main_gs -> playNote(GsNote)
+                when(octave) {
+                    0 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a0)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb0)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b0)
+                            }
+                        }
+                    }
+                    1 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a1)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb1)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b1)
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c1)
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb1)
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d1)
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb1)
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e1)
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f1)
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb1)
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g1)
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab1)
+                            }
+                        }
+                    }
+                    2 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a2)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb2)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b2)
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c2)
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb2)
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d2)
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb2)
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e2)
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f2)
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb2)
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g2)
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab2)
+                            }
+                        }
+                    }
+                    3 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a3)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb3)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b3)
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c3)
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb3)
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d3)
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb3)
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e3)
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f3)
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb3)
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g3)
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab3)
+                            }
+                        }
+                    }
+                    4 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a4)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb4)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b4)
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c4)
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb4)
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d4)
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb4)
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e4)
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f4)
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb4)
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g4)
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab4)
+                            }
+                        }
+                    }
+                    5 -> {
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a5)
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb5)
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b5)
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c5)
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb5)
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d5)
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb5)
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e5)
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f5)
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb5)
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g5)
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab5)
+                            }
+                        }
+                    }
+                    6 -> {
+                        when(v?.id) {
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c6)
+                            }
+                        }
+                    }
+                }
 
-//
-//                R.id.button_main_playSong -> {
-//                    //launch a coroutine
-//                    GlobalScope.launch {
-//                        playSong(song)
-//                    }
-//                }
-//            }
+                when(v?.id) {
+                    R.id.button_main_playSong -> {
+                    //launch a coroutine
+                    GlobalScope.launch {
+                        playSong(song)
+                    }
+                }
+                }
             }
         }
 
@@ -371,6 +603,90 @@ class MainActivity : AppCompatActivity() {
         noteMap["gsab3"] = noteValues.gsab3
         noteMap["gsab4"] = noteValues.gsab4
         noteMap["gsab5"] = noteValues.gsab5
+    }
+
+    private fun setListeners() {
+        val soundBoardListener = SoundBoardListener()
+        binding.buttonMainA.setOnClickListener(soundBoardListener)
+        binding.buttonMainAsbb.setOnClickListener(soundBoardListener)
+        binding.buttonMainB.setOnClickListener(soundBoardListener)
+        binding.buttonMainC.setOnClickListener(soundBoardListener)
+        binding.buttonMainCsdb.setOnClickListener(soundBoardListener)
+        binding.buttonMainD.setOnClickListener(soundBoardListener)
+        binding.buttonMainDseb.setOnClickListener(soundBoardListener)
+        binding.buttonMainE.setOnClickListener(soundBoardListener)
+        binding.buttonMainF.setOnClickListener(soundBoardListener)
+        binding.buttonMainFsgb.setOnClickListener(soundBoardListener)
+        binding.buttonMainG.setOnClickListener(soundBoardListener)
+        binding.buttonMainGsab.setOnClickListener(soundBoardListener)
+
+        binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
+
+
+        binding.buttonMainStartStopWriting.setOnClickListener {
+            currentlyWriting = !currentlyWriting
+        }
+
+        binding.buttonMainOctaveUp.setOnClickListener {
+            if(octave < 6) {
+                octave++
+                updateNoteButtons()
+            }
+        }
+        binding.buttonMainOctaveDown.setOnClickListener {
+            if(octave > 0) {
+                octave--
+                updateNoteButtons()
+            }
+        }
+
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateNoteButtons() {
+        if(octave == 0) {
+            binding.buttonMainA.text = "A$octave"
+            binding.buttonMainAsbb.text = "A♯/B♭$octave"
+            binding.buttonMainB.text = "B$octave"
+            binding.buttonMainC.text = "N/A"
+            binding.buttonMainCsdb.text = "N/A"
+            binding.buttonMainD.text = "N/A"
+            binding.buttonMainDseb.text = "N/A"
+            binding.buttonMainE.text = "N/A"
+            binding.buttonMainF.text = "N/A"
+            binding.buttonMainFsgb.text = "N/A"
+            binding.buttonMainG.text = "N/A"
+            binding.buttonMainGsab.text = "N/A"
+        }
+        else if (octave == 6) {
+            binding.buttonMainA.text = "N/A"
+            binding.buttonMainAsbb.text = "N/A"
+            binding.buttonMainB.text = "N/A"
+            binding.buttonMainC.text = "C$octave"
+            binding.buttonMainCsdb.text = "N/A"
+            binding.buttonMainD.text = "N/A"
+            binding.buttonMainDseb.text = "N/A"
+            binding.buttonMainE.text = "N/A"
+            binding.buttonMainF.text = "N/A"
+            binding.buttonMainFsgb.text = "N/A"
+            binding.buttonMainG.text = "N/A"
+            binding.buttonMainGsab.text = "N/A"
+        }
+        else {
+            binding.buttonMainA.text = "A$octave"
+            binding.buttonMainAsbb.text = "A♯/B♭$octave"
+            binding.buttonMainB.text = "B$octave"
+            binding.buttonMainC.text = "C$octave"
+            binding.buttonMainCsdb.text = "C♯/D♭$octave"
+            binding.buttonMainD.text = "D$octave"
+            binding.buttonMainDseb.text = "D♯/E♭$octave"
+            binding.buttonMainE.text = "E$octave"
+            binding.buttonMainF.text = "F$octave"
+            binding.buttonMainFsgb.text = "F♯/G♭$octave"
+            binding.buttonMainG.text = "G$octave"
+            binding.buttonMainGsab.text = "G♯/A♭$octave"
+        }
     }
 
 

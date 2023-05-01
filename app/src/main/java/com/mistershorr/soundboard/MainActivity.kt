@@ -1,4 +1,5 @@
-//add a system for different note durations. then, add the song writing and playing system.
+//add an indicator for which note duration is currently selected.
+// then figure out how to save the song to a file.
 
 package com.mistershorr.soundboard
 
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     var songBeingWritten: ArrayList<Note> = ArrayList()
 
     var octave: Int = 1
+
+    var selectedNoteType: Int = 4
 
     var currentlyWriting: Boolean = false
 
@@ -94,15 +98,15 @@ class MainActivity : AppCompatActivity() {
                         when(v?.id) {
                             R.id.button_main_a -> {
                                 playNote(noteValues.a0)
-                                songBeingWritten.add(Note("a0", 500))
+                                songBeingWritten.add(Note("a0", calculateNoteDuration()))
                             }
                             R.id.button_main_asbb -> {
                                 playNote(noteValues.asbb0)
-                                songBeingWritten.add(Note("asbb0", 500))
+                                songBeingWritten.add(Note("asbb0", calculateNoteDuration()))
                             }
                             R.id.button_main_b -> {
                                 playNote(noteValues.b0)
-                                songBeingWritten.add(Note("b0", 500))
+                                songBeingWritten.add(Note("b0", calculateNoteDuration()))
                             }
                         }
                     }
@@ -110,73 +114,274 @@ class MainActivity : AppCompatActivity() {
                         when(v?.id) {
                     R.id.button_main_a -> {
                         playNote(noteValues.a1)
-                        songBeingWritten.add(Note("a1", 500))
+                        songBeingWritten.add(Note("a1", calculateNoteDuration()))
                     }
                     R.id.button_main_asbb -> {
                         playNote(noteValues.asbb1)
-                        songBeingWritten.add(Note("asbb1", 500))
+                        songBeingWritten.add(Note("asbb1", calculateNoteDuration()))
                     }
                     R.id.button_main_b -> {
                         playNote(noteValues.b1)
-                        songBeingWritten.add(Note("b1", 500))
+                        songBeingWritten.add(Note("b1", calculateNoteDuration()))
                     }
                     R.id.button_main_c -> {
                         playNote(noteValues.c1)
-                        songBeingWritten.add(Note("c1", 500))
+                        songBeingWritten.add(Note("c1", calculateNoteDuration()))
                     }
                     R.id.button_main_csdb -> {
                         playNote(noteValues.csdb1)
-                        songBeingWritten.add(Note("csdb1", 500))
+                        songBeingWritten.add(Note("csdb1", calculateNoteDuration()))
                     }
                     R.id.button_main_d -> {
                         playNote(noteValues.d1)
-                        songBeingWritten.add(Note("d1", 500))
+                        songBeingWritten.add(Note("d1", calculateNoteDuration()))
                     }
                     R.id.button_main_dseb -> {
                         playNote(noteValues.dseb1)
-                        songBeingWritten.add(Note("dseb1", 500))
+                        songBeingWritten.add(Note("dseb1", calculateNoteDuration()))
                     }
                     R.id.button_main_e -> {
                         playNote(noteValues.e1)
-                        songBeingWritten.add(Note("e1", 500))
+                        songBeingWritten.add(Note("e1", calculateNoteDuration()))
                     }
                     R.id.button_main_f -> {
                         playNote(noteValues.f1)
-                        songBeingWritten.add(Note("f1", 500))
+                        songBeingWritten.add(Note("f1", calculateNoteDuration()))
                     }
                     R.id.button_main_fsgb -> {
                         playNote(noteValues.fsgb1)
-                        songBeingWritten.add(Note("fsgb1", 500))
+                        songBeingWritten.add(Note("fsgb1", calculateNoteDuration()))
                     }
                     R.id.button_main_g -> {
                         playNote(noteValues.g1)
-                        songBeingWritten.add(Note("g1", 500))
+                        songBeingWritten.add(Note("g1", calculateNoteDuration()))
                     }
                     R.id.button_main_gsab -> {
                         playNote(noteValues.gsab1)
-                        songBeingWritten.add(Note("gsab1", 500))
+                        songBeingWritten.add(Note("gsab1", calculateNoteDuration()))
                     }
                 }
                     }
                     2 -> {
-
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a2)
+                                songBeingWritten.add(Note("a2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb2)
+                                songBeingWritten.add(Note("asbb2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b2)
+                                songBeingWritten.add(Note("b2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c2)
+                                songBeingWritten.add(Note("c2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb2)
+                                songBeingWritten.add(Note("csdb2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d2)
+                                songBeingWritten.add(Note("d2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb2)
+                                songBeingWritten.add(Note("dseb2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e2)
+                                songBeingWritten.add(Note("e2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f2)
+                                songBeingWritten.add(Note("f2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb2)
+                                songBeingWritten.add(Note("fsgb2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g2)
+                                songBeingWritten.add(Note("g2", calculateNoteDuration()))
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab2)
+                                songBeingWritten.add(Note("gsab2", calculateNoteDuration()))
+                            }
+                        }
                     }
                     3 -> {
-
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a3)
+                                songBeingWritten.add(Note("a3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb3)
+                                songBeingWritten.add(Note("asbb3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b3)
+                                songBeingWritten.add(Note("b3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c3)
+                                songBeingWritten.add(Note("c3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb3)
+                                songBeingWritten.add(Note("csdb3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d3)
+                                songBeingWritten.add(Note("d3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb3)
+                                songBeingWritten.add(Note("dseb3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e3)
+                                songBeingWritten.add(Note("e3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f3)
+                                songBeingWritten.add(Note("f3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb3)
+                                songBeingWritten.add(Note("fsgb3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g3)
+                                songBeingWritten.add(Note("g3", calculateNoteDuration()))
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab3)
+                                songBeingWritten.add(Note("gsab3", calculateNoteDuration()))
+                            }
+                        }
                     }
                     4 -> {
-
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a4)
+                                songBeingWritten.add(Note("a4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb4)
+                                songBeingWritten.add(Note("asbb4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b4)
+                                songBeingWritten.add(Note("b4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c4)
+                                songBeingWritten.add(Note("c4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb4)
+                                songBeingWritten.add(Note("csdb4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d4)
+                                songBeingWritten.add(Note("d4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb4)
+                                songBeingWritten.add(Note("dseb4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e4)
+                                songBeingWritten.add(Note("e4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f4)
+                                songBeingWritten.add(Note("f4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb4)
+                                songBeingWritten.add(Note("fsgb4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g4)
+                                songBeingWritten.add(Note("g4", calculateNoteDuration()))
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab4)
+                                songBeingWritten.add(Note("gsab4", calculateNoteDuration()))
+                            }
+                        }
                     }
                     5 -> {
-
+                        when(v?.id) {
+                            R.id.button_main_a -> {
+                                playNote(noteValues.a5)
+                                songBeingWritten.add(Note("a5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_asbb -> {
+                                playNote(noteValues.asbb5)
+                                songBeingWritten.add(Note("asbb5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_b -> {
+                                playNote(noteValues.b5)
+                                songBeingWritten.add(Note("b5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_c -> {
+                                playNote(noteValues.c5)
+                                songBeingWritten.add(Note("c5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_csdb -> {
+                                playNote(noteValues.csdb5)
+                                songBeingWritten.add(Note("csdb5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_d -> {
+                                playNote(noteValues.d5)
+                                songBeingWritten.add(Note("d5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_dseb -> {
+                                playNote(noteValues.dseb5)
+                                songBeingWritten.add(Note("dseb5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_e -> {
+                                playNote(noteValues.e5)
+                                songBeingWritten.add(Note("e5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_f -> {
+                                playNote(noteValues.f5)
+                                songBeingWritten.add(Note("f5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_fsgb -> {
+                                playNote(noteValues.fsgb5)
+                                songBeingWritten.add(Note("fsgb5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_g -> {
+                                playNote(noteValues.g5)
+                                songBeingWritten.add(Note("g5", calculateNoteDuration()))
+                            }
+                            R.id.button_main_gsab -> {
+                                playNote(noteValues.gsab5)
+                                songBeingWritten.add(Note("gsab5", calculateNoteDuration()))
+                            }
+                        }
                     }
                     6 -> {
                         when(v?.id) {
                             R.id.button_main_c -> {
                                 playNote(noteValues.c6)
-                                songBeingWritten.add(Note("c6", 500))
+                                songBeingWritten.add(Note("c6", calculateNoteDuration()))
                             }
                         }
+                    }
+                }
+                when(v?.id) {
+                    R.id.button_main_playSong -> {
+                        Toast.makeText(this@MainActivity, "Must not be currently writing a song in order to play song", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -410,7 +615,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.button_main_playSong -> {
                     //launch a coroutine
                     GlobalScope.launch {
-                        playSong(song)
+                        playSong(songBeingWritten)
                     }
                 }
                 }
@@ -463,6 +668,15 @@ class MainActivity : AppCompatActivity() {
 
         val type = object : TypeToken<List<Note>>() { }.type
         song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
+    }
+
+    private fun calculateNoteDuration(): Long {
+        if(binding.editTextMainBpm.text.isNotBlank() && binding.editTextMainBpm.text.toString() != "0") {
+            return ((1000.0 / (binding.editTextMainBpm.text.toString().toDouble()/60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+        }
+        else {
+            return ((1000.0 / (1.0/60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+        }
     }
 
 
@@ -605,6 +819,7 @@ class MainActivity : AppCompatActivity() {
         noteMap["gsab5"] = noteValues.gsab5
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setListeners() {
         val soundBoardListener = SoundBoardListener()
         binding.buttonMainA.setOnClickListener(soundBoardListener)
@@ -625,6 +840,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonMainStartStopWriting.setOnClickListener {
             currentlyWriting = !currentlyWriting
+            if(currentlyWriting) {
+                binding.buttonMainStartStopWriting.text = "Stop Writing"
+            }
+            else {
+                binding.buttonMainStartStopWriting.text = "Start Writing"
+            }
         }
 
         binding.buttonMainOctaveUp.setOnClickListener {
@@ -640,6 +861,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.buttonMainWholeNote.setOnClickListener {
+            selectedNoteType = 1
+        }
+        binding.buttonMainHalfNote.setOnClickListener {
+            selectedNoteType = 2
+        }
+        binding.buttonMainQuarterNote.setOnClickListener {
+            selectedNoteType = 4
+        }
+        binding.buttonMainEighthNote.setOnClickListener {
+            selectedNoteType = 8
+        }
+        binding.buttonMainSixteenthNote.setOnClickListener {
+            selectedNoteType = 16
+        }
+        binding.buttonMainThirtySecondNote.setOnClickListener {
+            selectedNoteType = 32
+        }
+
+        binding.buttonMainRest.setOnClickListener {
+            if(currentlyWriting) {
+                songBeingWritten.add(Note("rest", calculateNoteDuration()))
+            }
+        }
 
     }
 

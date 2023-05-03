@@ -1,24 +1,29 @@
-//add an indicator for which note duration is currently selected.
-// then figure out how to save the song to a file.
+// figure out how to save the song to a file.
 
 package com.mistershorr.soundboard
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.media.AudioManager
 import android.media.SoundPool
-import android.os.Build.VERSION_CODES.N
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.nio.file.spi.FileTypeDetector
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,11 +38,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var soundPool : SoundPool
     lateinit var song: MutableList<Note>
 
-    var songBeingWritten: ArrayList<Note> = ArrayList()
+    var songBeingWritten: ArrayList<Note> = ArrayList<Note>()
 
     var octave: Int = 1
 
     var selectedNoteType: Int = 4
+
+    var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
 
     var currentlyWriting: Boolean = false
 
@@ -50,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        loadNoteTypeButtonsArray()
 
         initializeSoundPool()
         loadSong()
@@ -863,21 +872,27 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonMainWholeNote.setOnClickListener {
             selectedNoteType = 1
+            setNoteTypeButtonColors(it as Button)
         }
         binding.buttonMainHalfNote.setOnClickListener {
             selectedNoteType = 2
+            setNoteTypeButtonColors(it as Button)
         }
         binding.buttonMainQuarterNote.setOnClickListener {
             selectedNoteType = 4
+            setNoteTypeButtonColors(it as Button)
         }
         binding.buttonMainEighthNote.setOnClickListener {
             selectedNoteType = 8
+            setNoteTypeButtonColors(it as Button)
         }
         binding.buttonMainSixteenthNote.setOnClickListener {
             selectedNoteType = 16
+            setNoteTypeButtonColors(it as Button)
         }
         binding.buttonMainThirtySecondNote.setOnClickListener {
             selectedNoteType = 32
+            setNoteTypeButtonColors(it as Button)
         }
 
         binding.buttonMainRest.setOnClickListener {
@@ -886,6 +901,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.buttonMainDelete.setOnClickListener {
+            songBeingWritten = ArrayList<Note>()
+        }
+
+        binding.buttonMainSave.setOnClickListener {
+            saveSong()
+        }
+
+    }
+
+    private fun setNoteTypeButtonColors(button: Button) {
+        for(i in noteTypeButtons.indices) {
+            noteTypeButtons.get(i).setBackgroundColor(Color.rgb(110, 0, 248))
+        }
+        button.setBackgroundColor(Color.rgb(0, 200, 0))
+    }
+
+    private fun loadNoteTypeButtonsArray() {
+        noteTypeButtons.add(binding.buttonMainWholeNote)
+        noteTypeButtons.add(binding.buttonMainHalfNote)
+        noteTypeButtons.add(binding.buttonMainQuarterNote)
+        noteTypeButtons.add(binding.buttonMainEighthNote)
+        noteTypeButtons.add(binding.buttonMainSixteenthNote)
+        noteTypeButtons.add(binding.buttonMainThirtySecondNote)
     }
 
     @SuppressLint("SetTextI18n")
@@ -932,6 +971,18 @@ class MainActivity : AppCompatActivity() {
             binding.buttonMainG.text = "G$octave"
             binding.buttonMainGsab.text = "G♯/A♭$octave"
         }
+    }
+
+    private fun saveSong() {
+        val jsonArrayOfSong = JSONArray(songBeingWritten)
+        val songJsonString: String = jsonArrayOfSong.toString()
+
+        val file: File = File(this.filesDir, "test")
+        val fileWriter = FileWriter(file)
+        val bufferedWriter = BufferedWriter(fileWriter)
+        bufferedWriter.write(songJsonString)
+        bufferedWriter.close()
+
     }
 
 

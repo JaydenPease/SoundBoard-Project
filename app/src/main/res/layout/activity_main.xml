@@ -171,10 +171,14 @@
         android:id="@+id/button_main_quarterNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#00C800"
+        android:shadowColor="#673AB7"
         android:text="quarter note"
+        android:textColorHighlight="#2196F3"
         app:layout_constraintBottom_toTopOf="@+id/button_main_eighthNote"
         app:layout_constraintEnd_toEndOf="@+id/button_main_halfNote"
-        app:layout_constraintTop_toBottomOf="@+id/button_main_halfNote" />
+        app:layout_constraintTop_toBottomOf="@+id/button_main_halfNote"
+        app:strokeColor="#2196F3" />
 
     <Button
         android:id="@+id/button_main_eighthNote"
@@ -243,5 +247,22 @@
         android:text="Add rest"
         app:layout_constraintStart_toStartOf="@+id/button_main_octaveDown"
         app:layout_constraintTop_toBottomOf="@+id/button_main_octaveDown" />
+
+    <Button
+        android:id="@+id/button_main_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_main_startStopWriting" />
+
+    <Button
+        android:id="@+id/button_main_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#C80000"
+        android:text="Delete"
+        app:layout_constraintBottom_toTopOf="@+id/button_main_save"
+        app:layout_constraintStart_toStartOf="@+id/button_main_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

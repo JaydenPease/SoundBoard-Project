@@ -1,3 +1,7 @@
 package com.mistershorr.soundboard
 
-data class Note(val note: String, val duration: Long)
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Note(val note: String, val duration: Long) : Parcelable

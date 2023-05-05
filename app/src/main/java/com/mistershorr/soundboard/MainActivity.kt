@@ -1,4 +1,5 @@
-// figure out how to save the song to a file.
+// figure out how to have multiple songs saved to files,
+// and how to select a song from those files to be played
 
 package com.mistershorr.soundboard
 
@@ -19,10 +20,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.nio.file.spi.FileTypeDetector
+import java.io.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         initializeSoundPool()
         loadSong()
         setListeners()
+
+
 
 
 
@@ -623,8 +624,9 @@ class MainActivity : AppCompatActivity() {
                 when(v?.id) {
                     R.id.button_main_playSong -> {
                     //launch a coroutine
+
                     GlobalScope.launch {
-                        playSong(songBeingWritten)
+                        playSong(song)
                     }
                 }
                 }
@@ -661,9 +663,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadSong() {
 
+        val fis: FileInputStream = openFileInput("test.json")
+//        val scanner = Scanner(fis)
+//        scanner.useDelimiter("\\Z")
+//        content = scanner.next()
+//        scanner.close()
+
         val inputStream = resources.openRawResource(R.raw.song)
 
-        val jsonString = inputStream.bufferedReader().use {
+        val jsonString = fis.bufferedReader().use {
 
             it.readText()
         }
@@ -905,9 +913,36 @@ class MainActivity : AppCompatActivity() {
             songBeingWritten = ArrayList<Note>()
         }
 
-        binding.buttonMainSave.setOnClickListener {
-            saveSong()
-        }
+
+
+        binding.buttonMainSave.setOnClickListener(View.OnClickListener {
+
+            val gson = Gson()
+
+            Log.d(TAG, songBeingWritten.toString())
+            //val jsonArrayOfSong = JSONArray(songBeingWritten)
+            val jsonArrayOfSong = gson.toJson(songBeingWritten)
+
+            Log.d(TAG, jsonArrayOfSong.toString())
+            val songJsonString: String = jsonArrayOfSong.toString()
+            Log.d(TAG, songJsonString)
+
+//            val gson = Gson()
+//            val type = object : TypeToken<List<Note>>() { }.type
+//            song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
+
+            try {
+                var output: Writer? = null
+                val file =
+                    File(this.filesDir, "test.json")
+                output = BufferedWriter(FileWriter(file))
+                output.write(songJsonString)
+                output.close()
+                Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+            }
+        })
 
     }
 
@@ -973,17 +1008,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveSong() {
-        val jsonArrayOfSong = JSONArray(songBeingWritten)
-        val songJsonString: String = jsonArrayOfSong.toString()
-
-        val file: File = File(this.filesDir, "test")
-        val fileWriter = FileWriter(file)
-        val bufferedWriter = BufferedWriter(fileWriter)
-        bufferedWriter.write(songJsonString)
-        bufferedWriter.close()
-
-    }
+//    private fun saveSong() {
+//        val jsonArrayOfSong = JSONArray(songBeingWritten)
+//        val songJsonString: String = jsonArrayOfSong.toString()
+//
+//        val file: File = File(this.filesDir, "test.json")
+//        val fileWriter = FileWriter(file)
+//        val bufferedWriter = BufferedWriter(fileWriter)
+//        bufferedWriter.write(songJsonString)
+//        bufferedWriter.close()
+//
+//    }
 
 
 }

@@ -1,5 +1,4 @@
-// figure out how to have multiple songs saved to files,
-// and how to select a song from those files to be played
+// figure out how to display all saved songs and select one
 
 package com.mistershorr.soundboard
 
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     var noteValues = NoteValues()
 
     lateinit var soundPool : SoundPool
-    lateinit var song: MutableList<Note>
+    var song: ArrayList<Note> = ArrayList<Note>()
 
     var songBeingWritten: ArrayList<Note> = ArrayList<Note>()
 
@@ -56,11 +55,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.groupMainDurations.visibility = View.GONE
+
 
         loadNoteTypeButtonsArray()
 
         initializeSoundPool()
-        loadSong()
+
         setListeners()
 
 
@@ -391,7 +392,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 when(v?.id) {
                     R.id.button_main_playSong -> {
-                        Toast.makeText(this@MainActivity, "Must not be currently writing a song in order to play song", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Must not be currently writing a song in order to play song", Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -625,9 +626,21 @@ class MainActivity : AppCompatActivity() {
                     R.id.button_main_playSong -> {
                     //launch a coroutine
 
+                        if(binding.editTextMainSongName.text.isNotBlank()) {
+                        loadSong()
                     GlobalScope.launch {
+                        playNote("rest")
+                        delay(500)
                         playSong(song)
                     }
+                    }
+                        else {
+                            GlobalScope.launch {
+                                playNote("rest")
+                                delay(500)
+                                playSong(songBeingWritten)
+                            }
+                        }
                 }
                 }
             }
@@ -645,7 +658,6 @@ class MainActivity : AppCompatActivity() {
         //0 until 10 - 0 to 9
         //i in song.indices - goes through the entire list
         //for(item in list) is the enhanced for loop
-        //java is superior to kotlin because you can go BACKWARDS, SIDEWAYS, and ALL WAYS
         for(i in song.indices) {
             playNote(song[i].note)
             delay(song[i].duration)
@@ -663,28 +675,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadSong() {
 
-        val fis: FileInputStream = openFileInput("test.json")
-//        val scanner = Scanner(fis)
-//        scanner.useDelimiter("\\Z")
-//        content = scanner.next()
-//        scanner.close()
+        try {
+            val fis: FileInputStream = openFileInput(binding.editTextMainSongName.text.toString() + ".json")
 
-        val inputStream = resources.openRawResource(R.raw.song)
+            val inputStream = resources.openRawResource(R.raw.song)
 
-        val jsonString = fis.bufferedReader().use {
+            val jsonString = fis.bufferedReader().use {
 
-            it.readText()
+                it.readText()
+            }
+            Log.d(TAG, "onCreate: $jsonString")
+
+
+
+
+            val gson = Gson()
+
+
+            val type = object : TypeToken<List<Note>>() { }.type
+            song = gson.fromJson<List<Note>>(jsonString, type) as ArrayList<Note>
+        } catch (e: Exception) {
+            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
         }
-        Log.d(TAG, "onCreate: $jsonString")
 
 
-
-
-        val gson = Gson()
-
-
-        val type = object : TypeToken<List<Note>>() { }.type
-        song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
     }
 
     private fun calculateNoteDuration(): Long {
@@ -902,6 +916,10 @@ class MainActivity : AppCompatActivity() {
             selectedNoteType = 32
             setNoteTypeButtonColors(it as Button)
         }
+        binding.buttonMainChord.setOnClickListener {
+            selectedNoteType = 0
+            setNoteTypeButtonColors(it as Button)
+        }
 
         binding.buttonMainRest.setOnClickListener {
             if(currentlyWriting) {
@@ -913,35 +931,19 @@ class MainActivity : AppCompatActivity() {
             songBeingWritten = ArrayList<Note>()
         }
 
+        binding.buttonMainDurationSelection.setOnClickListener {
+            binding.groupMainNotes.visibility = View.GONE
+            binding.groupMainDurations.visibility = View.VISIBLE
+        }
+        binding.buttonMainNoteSelection.setOnClickListener {
+            binding.groupMainDurations.visibility = View.GONE
+            binding.groupMainNotes.visibility = View.VISIBLE
+        }
+
 
 
         binding.buttonMainSave.setOnClickListener(View.OnClickListener {
-
-            val gson = Gson()
-
-            Log.d(TAG, songBeingWritten.toString())
-            //val jsonArrayOfSong = JSONArray(songBeingWritten)
-            val jsonArrayOfSong = gson.toJson(songBeingWritten)
-
-            Log.d(TAG, jsonArrayOfSong.toString())
-            val songJsonString: String = jsonArrayOfSong.toString()
-            Log.d(TAG, songJsonString)
-
-//            val gson = Gson()
-//            val type = object : TypeToken<List<Note>>() { }.type
-//            song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
-
-            try {
-                var output: Writer? = null
-                val file =
-                    File(this.filesDir, "test.json")
-                output = BufferedWriter(FileWriter(file))
-                output.write(songJsonString)
-                output.close()
-                Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
-            }
+            saveSong()
         })
 
     }
@@ -960,6 +962,7 @@ class MainActivity : AppCompatActivity() {
         noteTypeButtons.add(binding.buttonMainEighthNote)
         noteTypeButtons.add(binding.buttonMainSixteenthNote)
         noteTypeButtons.add(binding.buttonMainThirtySecondNote)
+        noteTypeButtons.add(binding.buttonMainChord)
     }
 
     @SuppressLint("SetTextI18n")
@@ -1008,17 +1011,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    private fun saveSong() {
-//        val jsonArrayOfSong = JSONArray(songBeingWritten)
-//        val songJsonString: String = jsonArrayOfSong.toString()
-//
-//        val file: File = File(this.filesDir, "test.json")
-//        val fileWriter = FileWriter(file)
-//        val bufferedWriter = BufferedWriter(fileWriter)
-//        bufferedWriter.write(songJsonString)
-//        bufferedWriter.close()
-//
-//    }
+    private fun saveSong() {
+
+        val gson = Gson()
+
+        Log.d(TAG, songBeingWritten.toString())
+        //val jsonArrayOfSong = JSONArray(songBeingWritten)
+        val jsonArrayOfSong = gson.toJson(songBeingWritten)
+
+        Log.d(TAG, jsonArrayOfSong.toString())
+        val songJsonString: String = jsonArrayOfSong.toString()
+        Log.d(TAG, songJsonString)
+
+//            val gson = Gson()
+//            val type = object : TypeToken<List<Note>>() { }.type
+//            song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
+
+        try {
+            var output: Writer? = null
+            val file =
+                File(this.filesDir, binding.editTextMainSongName.text.toString() + ".json")
+            output = BufferedWriter(FileWriter(file))
+            output.write(songJsonString)
+            output.close()
+            Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+        }
+
+    }
 
 
 }

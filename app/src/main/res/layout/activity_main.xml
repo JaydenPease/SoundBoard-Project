@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_main_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="button_main_c,button_main_csdb,button_main_d,button_main_dseb,button_main_e,button_main_f,button_main_fsgb,button_main_g,button_main_gsab,button_main_a,button_main_asbb,button_main_b,button_main_octaveDown,button_main_octaveUp,button_main_rest"
+        tools:visibility="gone" />
+
     <Button
         android:id="@+id/button_main_playSong"
         android:layout_width="wrap_content"
@@ -126,28 +133,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="B1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button_main_octaveUp"
+        app:layout_constraintStart_toStartOf="@+id/button_main_octaveUp"
         app:layout_constraintTop_toBottomOf="@+id/button_main_asbb" />
 
     <Button
         android:id="@+id/button_main_octaveDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Octave Down"
-        app:layout_constraintStart_toStartOf="@+id/button_main_octaveUp"
+        app:layout_constraintBottom_toTopOf="@+id/button_main_rest"
+        app:layout_constraintStart_toStartOf="@+id/button_main_rest"
         app:layout_constraintTop_toBottomOf="@+id/button_main_octaveUp" />
 
     <Button
         android:id="@+id/button_main_octaveUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:text="Octave Up"
-        app:layout_constraintStart_toEndOf="@+id/button_main_c"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/button_main_octaveDown"
+        app:layout_constraintStart_toStartOf="@+id/button_main_octaveDown"
+        app:layout_constraintTop_toBottomOf="@+id/button_main_b" />
+
+    <Button
+        android:id="@+id/button_main_rest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add rest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_main_octaveDown" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_main_durations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="button_main_wholeNote,button_main_halfNote,button_main_quarterNote,button_main_eighthNote,button_main_sixteenthNote,button_main_thirtySecondNote,button_main_chord"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/button_main_wholeNote"
@@ -155,7 +177,7 @@
         android:layout_height="wrap_content"
         android:text="Whole note"
         app:layout_constraintBottom_toTopOf="@+id/button_main_halfNote"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/button_main_b"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -164,7 +186,7 @@
         android:layout_height="wrap_content"
         android:text="half note"
         app:layout_constraintBottom_toTopOf="@+id/button_main_quarterNote"
-        app:layout_constraintEnd_toEndOf="@+id/button_main_wholeNote"
+        app:layout_constraintStart_toStartOf="@+id/button_main_wholeNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_wholeNote" />
 
     <Button
@@ -176,7 +198,7 @@
         android:text="quarter note"
         android:textColorHighlight="#2196F3"
         app:layout_constraintBottom_toTopOf="@+id/button_main_eighthNote"
-        app:layout_constraintEnd_toEndOf="@+id/button_main_halfNote"
+        app:layout_constraintStart_toStartOf="@+id/button_main_halfNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_halfNote"
         app:strokeColor="#2196F3" />
 
@@ -186,7 +208,7 @@
         android:layout_height="wrap_content"
         android:text="8th note"
         app:layout_constraintBottom_toTopOf="@+id/button_main_sixteenthNote"
-        app:layout_constraintEnd_toEndOf="@+id/button_main_quarterNote"
+        app:layout_constraintStart_toStartOf="@+id/button_main_quarterNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_quarterNote" />
 
     <Button
@@ -195,7 +217,7 @@
         android:layout_height="wrap_content"
         android:text="16th note"
         app:layout_constraintBottom_toTopOf="@+id/button_main_thirtySecondNote"
-        app:layout_constraintEnd_toEndOf="@+id/button_main_eighthNote"
+        app:layout_constraintStart_toStartOf="@+id/button_main_eighthNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_eighthNote" />
 
     <Button
@@ -203,17 +225,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="32nd note"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_main_bottomOfNoteTypes"
-        app:layout_constraintEnd_toEndOf="@+id/button_main_sixteenthNote"
+        app:layout_constraintBottom_toTopOf="@+id/button_main_chord"
+        app:layout_constraintStart_toStartOf="@+id/button_main_sixteenthNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_sixteenthNote" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_main_bottomOfNoteTypes"
+    <Button
+        android:id="@+id/button_main_chord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:text="Chord"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintGuide_begin="342dp"
+        app:layout_constraintStart_toStartOf="@+id/button_main_thirtySecondNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_thirtySecondNote" />
 
     <EditText
@@ -225,28 +247,20 @@
         android:inputType="number"
         android:text="60"
         app:layout_constraintBottom_toTopOf="@+id/button_main_playSong"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/textView_main_bpmIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Input BPM below:"
+        android:text="Input BPM below (Writing):"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/editText_main_bpm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.88"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button_main_rest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Add rest"
-        app:layout_constraintStart_toStartOf="@+id/button_main_octaveDown"
-        app:layout_constraintTop_toBottomOf="@+id/button_main_octaveDown" />
 
     <Button
         android:id="@+id/button_main_save"
@@ -264,5 +278,36 @@
         android:text="Delete"
         app:layout_constraintBottom_toTopOf="@+id/button_main_save"
         app:layout_constraintStart_toStartOf="@+id/button_main_save" />
+
+    <EditText
+        android:id="@+id/editText_main_songName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Song Name, Play/Save"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/textView_main_bpmIndicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Button
+        android:id="@+id/button_main_noteSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Note selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_main_durationSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="duration selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_main_noteSelection" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

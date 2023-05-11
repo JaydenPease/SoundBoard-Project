@@ -1,4 +1,4 @@
-// figure out how to display all saved songs and select one
+// figure out how to make it so songs can't be started when one is already playing, and also how to stop a song prematurely
 
 package com.mistershorr.soundboard
 
@@ -12,15 +12,18 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import java.io.*
-import java.util.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.BasicFileAttributes
+import java.util.function.BiPredicate
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,6 +51,12 @@ class MainActivity : AppCompatActivity() {
 
     var noteMap = HashMap<String, Int>()
 
+    var listOfSavedSongs: ArrayList<String> = ArrayList<String>()
+
+    var groupList: ArrayList<Group> = ArrayList<Group>()
+
+    var songsDisplayed: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +64,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.groupMainDurations.visibility = View.GONE
+
 
 
         loadNoteTypeButtonsArray()
+
+        loadGroupList()
+
+        for(i in groupList.indices) {
+            groupList.get(i).visibility = View.GONE
+        }
+        binding.groupMainNotes.visibility = View.VISIBLE
 
         initializeSoundPool()
 
@@ -676,12 +692,9 @@ class MainActivity : AppCompatActivity() {
     private fun loadSong() {
 
         try {
+            //i forgot where i took this code from
             val fis: FileInputStream = openFileInput(binding.editTextMainSongName.text.toString() + ".json")
-
-            val inputStream = resources.openRawResource(R.raw.song)
-
             val jsonString = fis.bufferedReader().use {
-
                 it.readText()
             }
             Log.d(TAG, "onCreate: $jsonString")
@@ -702,11 +715,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun calculateNoteDuration(): Long {
-        if(binding.editTextMainBpm.text.isNotBlank() && binding.editTextMainBpm.text.toString() != "0") {
-            return ((1000.0 / (binding.editTextMainBpm.text.toString().toDouble()/60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+        if(selectedNoteType != 0) {
+            if (binding.editTextMainBpm.text.isNotBlank() && binding.editTextMainBpm.text.toString() != "0") {
+                return ((1000.0 / (binding.editTextMainBpm.text.toString().toDouble() / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+            } else {
+                return ((1000.0 / (1.0 / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+            }
         }
         else {
-            return ((1000.0 / (1.0/60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+            return 0;
         }
     }
 
@@ -916,7 +933,7 @@ class MainActivity : AppCompatActivity() {
             selectedNoteType = 32
             setNoteTypeButtonColors(it as Button)
         }
-        binding.buttonMainChord.setOnClickListener {
+        binding.buttonMainInstant.setOnClickListener {
             selectedNoteType = 0
             setNoteTypeButtonColors(it as Button)
         }
@@ -928,23 +945,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonMainDelete.setOnClickListener {
-            songBeingWritten = ArrayList<Note>()
+            deleteSong()
         }
 
         binding.buttonMainDurationSelection.setOnClickListener {
-            binding.groupMainNotes.visibility = View.GONE
+            for(i in groupList.indices) {
+                groupList.get(i).visibility = View.GONE
+            }
             binding.groupMainDurations.visibility = View.VISIBLE
+            songsDisplayed = false
         }
         binding.buttonMainNoteSelection.setOnClickListener {
-            binding.groupMainDurations.visibility = View.GONE
+            for(i in groupList.indices) {
+                groupList.get(i).visibility = View.GONE
+            }
             binding.groupMainNotes.visibility = View.VISIBLE
+            songsDisplayed = false
+        }
+
+        binding.buttonMainSave.setOnClickListener {
+            saveSong()
+        }
+
+        binding.buttonMainDisplayAllSongs.setOnClickListener {
+            displayAllSongs()
         }
 
 
-
-        binding.buttonMainSave.setOnClickListener(View.OnClickListener {
-            saveSong()
-        })
 
     }
 
@@ -962,7 +989,7 @@ class MainActivity : AppCompatActivity() {
         noteTypeButtons.add(binding.buttonMainEighthNote)
         noteTypeButtons.add(binding.buttonMainSixteenthNote)
         noteTypeButtons.add(binding.buttonMainThirtySecondNote)
-        noteTypeButtons.add(binding.buttonMainChord)
+        noteTypeButtons.add(binding.buttonMainInstant)
     }
 
     @SuppressLint("SetTextI18n")
@@ -1016,17 +1043,14 @@ class MainActivity : AppCompatActivity() {
         val gson = Gson()
 
         Log.d(TAG, songBeingWritten.toString())
-        //val jsonArrayOfSong = JSONArray(songBeingWritten)
         val jsonArrayOfSong = gson.toJson(songBeingWritten)
 
         Log.d(TAG, jsonArrayOfSong.toString())
         val songJsonString: String = jsonArrayOfSong.toString()
         Log.d(TAG, songJsonString)
 
-//            val gson = Gson()
-//            val type = object : TypeToken<List<Note>>() { }.type
-//            song = gson.fromJson<List<Note>>(jsonString, type) as MutableList<Note>
 
+        //i forgot where i took this code from
         try {
             var output: Writer? = null
             val file =
@@ -1035,10 +1059,74 @@ class MainActivity : AppCompatActivity() {
             output.write(songJsonString)
             output.close()
             Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
+            if(songsDisplayed) {
+                displayAllSongs()
+            }
         } catch (e: Exception) {
             Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
         }
 
+    }
+
+
+    private fun displayAllSongs() {
+        listOfSavedSongs = ArrayList<String>()
+
+        //this code is taken from https://www.techiedelight.com/traverse-directory-to-list-files-kotlin/
+        val dir = this.filesDir.toString()
+        Files.find(
+            Paths.get(dir), Int.MAX_VALUE,
+            BiPredicate { _, file: BasicFileAttributes -> file.isRegularFile }
+        ).use { paths -> paths.forEach {
+            Log.d(TAG, it.toString())
+            listOfSavedSongs.add(it.toString())
+        } }
+
+        for(i in listOfSavedSongs.indices) {
+            listOfSavedSongs.set(i, listOfSavedSongs.get(i).replace(this.filesDir.toString() + "/", "").replace(".json", ""))
+            Log.d(TAG, listOfSavedSongs.get(i))
+        }
+
+        for(i in groupList.indices) {
+            groupList.get(i).visibility = View.GONE
+        }
+        binding.groupMainSongDisplay.visibility = View.VISIBLE
+
+        binding.textViewMainDisplayedSongs.text = listOfSavedSongs.toString()
+
+        songsDisplayed = true
+
+    }
+
+    private fun loadGroupList() {
+        groupList.add(binding.groupMainNotes)
+        groupList.add(binding.groupMainDurations)
+        groupList.add(binding.groupMainSongDisplay)
+    }
+
+    private fun deleteSong() {
+
+        if(binding.editTextMainSongName.text.isBlank()) {
+            songBeingWritten = ArrayList<Note>()
+        }
+        else {
+
+            try {
+
+                //i took this code from https://stackoverflow.com/questions/3554722/how-to-delete-internal-storage-file-in-android
+                val dir = filesDir
+                val file = File(dir, binding.editTextMainSongName.text.toString() + ".json")
+                file.delete()
+
+                if(songsDisplayed) {
+                    displayAllSongs()
+                }
+
+
+            } catch (e: Exception) {
+                Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 

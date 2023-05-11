@@ -168,7 +168,7 @@
         android:id="@+id/group_main_durations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="button_main_wholeNote,button_main_halfNote,button_main_quarterNote,button_main_eighthNote,button_main_sixteenthNote,button_main_thirtySecondNote,button_main_chord"
+        app:constraint_referenced_ids="button_main_wholeNote,button_main_halfNote,button_main_quarterNote,button_main_eighthNote,button_main_sixteenthNote,button_main_thirtySecondNote,button_main_instant"
         tools:visibility="visible" />
 
     <Button
@@ -225,15 +225,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="32nd note"
-        app:layout_constraintBottom_toTopOf="@+id/button_main_chord"
+        app:layout_constraintBottom_toTopOf="@+id/button_main_instant"
         app:layout_constraintStart_toStartOf="@+id/button_main_sixteenthNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_sixteenthNote" />
 
     <Button
-        android:id="@+id/button_main_chord"
+        android:id="@+id/button_main_instant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chord"
+        android:text="Instant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/button_main_thirtySecondNote"
         app:layout_constraintTop_toBottomOf="@+id/button_main_thirtySecondNote" />
@@ -284,7 +284,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Song Name, Play/Save"
+        android:hint="Song Name"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/textView_main_bpmIndicator"
         app:layout_constraintEnd_toEndOf="parent"
@@ -309,5 +309,52 @@
         android:text="duration selection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_main_noteSelection" />
+
+    <Button
+        android:id="@+id/button_main_displayAllSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Display all Songs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_main_durationSelection" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_main_songDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="guideline_main_endOfDisplayedSongs,textView_main_displayedSongs"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_main_endOfDisplayedSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="139dp" />
+
+    <TextView
+        android:id="@+id/textView_main_displayedSongs"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_main_endOfDisplayedSongs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="the greatest song of all time ever" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Enter song name for deleting and playing. Leave blank to play/delete the song currently being written."
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/editText_main_songName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_main_endOfDisplayedSongs" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

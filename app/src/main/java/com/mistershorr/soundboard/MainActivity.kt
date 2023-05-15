@@ -1,4 +1,4 @@
-// figure out how to make it so songs can't be started when one is already playing, and also how to stop a song prematurely
+//create a tutorial
 
 package com.mistershorr.soundboard
 
@@ -16,9 +16,7 @@ import androidx.constraintlayout.widget.Group
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mistershorr.soundboard.databinding.ActivityMainBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -55,7 +53,11 @@ class MainActivity : AppCompatActivity() {
 
     var groupList: ArrayList<Group> = ArrayList<Group>()
 
-    var songsDisplayed: Boolean = false
+    var areSongsDisplayed: Boolean = false
+
+    var isSongCurrentlyPlaying: Boolean = false
+
+    var currentTutorialSlide: Int = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -642,20 +644,30 @@ class MainActivity : AppCompatActivity() {
                     R.id.button_main_playSong -> {
                     //launch a coroutine
 
-                        if(binding.editTextMainSongName.text.isNotBlank()) {
-                        loadSong()
-                    GlobalScope.launch {
-                        playNote("rest")
-                        delay(500)
-                        playSong(song)
-                    }
-                    }
-                        else {
-                            GlobalScope.launch {
-                                playNote("rest")
-                                delay(500)
-                                playSong(songBeingWritten)
+                        if(!isSongCurrentlyPlaying) {
+
+                            isSongCurrentlyPlaying = true
+
+                            binding.buttonMainPlaySong.text = "Stop Song"
+
+                            if (binding.editTextMainSongName.text.isNotBlank()) {
+                                loadSong()
+                                GlobalScope.launch {
+                                    playNote("rest")
+                                    delay(500)
+                                    playSong(song)
+                                }
+                            } else {
+                                GlobalScope.launch {
+                                    playNote("rest")
+                                    delay(500)
+                                    playSong(songBeingWritten)
+                                }
                             }
+                        }
+
+                        else {
+                            isSongCurrentlyPlaying = false
                         }
                 }
                 }
@@ -677,6 +689,15 @@ class MainActivity : AppCompatActivity() {
         for(i in song.indices) {
             playNote(song[i].note)
             delay(song[i].duration)
+            if(!isSongCurrentlyPlaying) {
+                break
+            }
+        }
+
+        isSongCurrentlyPlaying = false
+        //code from Mr Shorr
+        GlobalScope.launch(Dispatchers.Main) {
+            binding.buttonMainPlaySong.text = "Play Song"
         }
 
 
@@ -686,6 +707,8 @@ class MainActivity : AppCompatActivity() {
                 //to play the note, you need the corresponding soundPool object
            //delay for the delay
     }
+
+
 
 
 
@@ -714,16 +737,37 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun calculateNoteDuration(): Long {
-        if(selectedNoteType != 0) {
-            if (binding.editTextMainBpm.text.isNotBlank() && binding.editTextMainBpm.text.toString() != "0") {
-                return ((1000.0 / (binding.editTextMainBpm.text.toString().toDouble() / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
-            } else {
-                return ((1000.0 / (1.0 / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+    private fun loadSongToBeEdited() {
+        try {
+            //i forgot where i took this code from
+            val fis: FileInputStream = openFileInput(binding.editTextMainSongName.text.toString() + ".json")
+            val jsonString = fis.bufferedReader().use {
+                it.readText()
             }
+            Log.d(TAG, "onCreate: $jsonString")
+
+
+
+
+            val gson = Gson()
+
+
+            val type = object : TypeToken<List<Note>>() { }.type
+            songBeingWritten = gson.fromJson<List<Note>>(jsonString, type) as ArrayList<Note>
+        } catch (e: Exception) {
+            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
         }
-        else {
-            return 0;
+    }
+
+    private fun calculateNoteDuration(): Long {
+        return if(selectedNoteType != 0) {
+            if (binding.editTextMainBpm.text.isNotBlank() && binding.editTextMainBpm.text.toString() != "0") {
+                ((1000.0 / (binding.editTextMainBpm.text.toString().toDouble() / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+            } else {
+                ((1000.0 / (1.0 / 60.0)) / (selectedNoteType.toDouble() / 4.0)).toLong()
+            }
+        } else {
+            0
         }
     }
 
@@ -890,10 +934,14 @@ class MainActivity : AppCompatActivity() {
             currentlyWriting = !currentlyWriting
             if(currentlyWriting) {
                 binding.buttonMainStartStopWriting.text = "Stop Writing"
+                if(binding.editTextMainSongName.text.isNotBlank()) {
+                    loadSongToBeEdited()
+                }
             }
             else {
                 binding.buttonMainStartStopWriting.text = "Start Writing"
             }
+
         }
 
         binding.buttonMainOctaveUp.setOnClickListener {
@@ -953,14 +1001,14 @@ class MainActivity : AppCompatActivity() {
                 groupList.get(i).visibility = View.GONE
             }
             binding.groupMainDurations.visibility = View.VISIBLE
-            songsDisplayed = false
+            areSongsDisplayed = false
         }
         binding.buttonMainNoteSelection.setOnClickListener {
             for(i in groupList.indices) {
                 groupList.get(i).visibility = View.GONE
             }
             binding.groupMainNotes.visibility = View.VISIBLE
-            songsDisplayed = false
+            areSongsDisplayed = false
         }
 
         binding.buttonMainSave.setOnClickListener {
@@ -1059,7 +1107,7 @@ class MainActivity : AppCompatActivity() {
             output.write(songJsonString)
             output.close()
             Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
-            if(songsDisplayed) {
+            if(areSongsDisplayed) {
                 displayAllSongs()
             }
         } catch (e: Exception) {
@@ -1094,7 +1142,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.textViewMainDisplayedSongs.text = listOfSavedSongs.toString()
 
-        songsDisplayed = true
+        areSongsDisplayed = true
 
     }
 
@@ -1118,7 +1166,7 @@ class MainActivity : AppCompatActivity() {
                 val file = File(dir, binding.editTextMainSongName.text.toString() + ".json")
                 file.delete()
 
-                if(songsDisplayed) {
+                if(areSongsDisplayed) {
                     displayAllSongs()
                 }
 

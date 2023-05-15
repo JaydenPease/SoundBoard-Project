@@ -169,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="button_main_wholeNote,button_main_halfNote,button_main_quarterNote,button_main_eighthNote,button_main_sixteenthNote,button_main_thirtySecondNote,button_main_instant"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/button_main_wholeNote"
@@ -254,7 +254,7 @@
         android:id="@+id/textView_main_bpmIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Input BPM below (Writing):"
+        android:text="Input BPM below:"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/editText_main_bpm"
@@ -325,14 +325,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="guideline_main_endOfDisplayedSongs,textView_main_displayedSongs"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_main_endOfDisplayedSongs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="139dp" />
+        app:layout_constraintEnd_toStartOf="@+id/button_main_tutorialPrevious"
+        app:layout_constraintGuide_begin="139dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView_main_displayedSongs"
@@ -347,14 +350,34 @@
         tools:text="the greatest song of all time ever" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView_main_tutorials"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Enter song name for deleting and playing. Leave blank to play/delete the song currently being written."
+        android:text="Leave song name box blank to work on an unnamed song."
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/editText_main_songName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_main_endOfDisplayedSongs" />
+
+    <Button
+        android:id="@+id/button_main_tutorialNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        app:layout_constraintBottom_toTopOf="@+id/textView_main_tutorials"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_main_tutorialPrevious" />
+
+    <Button
+        android:id="@+id/button_main_tutorialPrevious"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Previous"
+        app:layout_constraintBottom_toTopOf="@+id/textView_main_tutorials"
+        app:layout_constraintEnd_toStartOf="@+id/button_main_tutorialNext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/guideline_main_endOfDisplayedSongs" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity() {
 
     var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
 
+    var dynamicButtons :ArrayList<Button> = ArrayList<Button>()
+
     var currentlyWriting: Boolean = false
 
     var noteMap = HashMap<String, Int>()
@@ -59,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 
     var currentTutorialSlide: Int = 1
 
+    var writingVolume: Float = 1f
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +74,9 @@ class MainActivity : AppCompatActivity() {
 
 
         loadNoteTypeButtonsArray()
+        loadDynamicButtonsArray()
+
+        binding.buttonMainMf.setBackgroundColor(Color.rgb(0, 200, 0))
 
         loadGroupList()
 
@@ -109,13 +116,13 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    private fun playNote(note: String) {
+    private fun playNote(note: String, volume: Float) {
         // ?: is the elvis operator. it lets you provide a default value if the value is null
-        playNote(noteMap[note] ?: 0)
+        playNote(noteMap[note] ?: 0, volume)
     }
 
-    private fun playNote(noteId : Int) {
-        soundPool.play(noteId, 1f, 1f, 1, 0, 1f)
+    private fun playNote(noteId : Int, volume: Float) {
+        soundPool.play(noteId, volume, volume, 1, 0, 1f)
     }
 
     private inner class SoundBoardListener : View.OnClickListener {
@@ -126,284 +133,284 @@ class MainActivity : AppCompatActivity() {
                     0 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a0)
-                                songBeingWritten.add(Note("a0", calculateNoteDuration()))
+                                playNote(noteValues.a0, writingVolume)
+                                songBeingWritten.add(Note("a0", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb0)
-                                songBeingWritten.add(Note("asbb0", calculateNoteDuration()))
+                                playNote(noteValues.asbb0, writingVolume)
+                                songBeingWritten.add(Note("asbb0", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b0)
-                                songBeingWritten.add(Note("b0", calculateNoteDuration()))
+                                playNote(noteValues.b0, writingVolume)
+                                songBeingWritten.add(Note("b0", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
                     1 -> {
                         when(v?.id) {
                     R.id.button_main_a -> {
-                        playNote(noteValues.a1)
-                        songBeingWritten.add(Note("a1", calculateNoteDuration()))
+                        playNote(noteValues.a1, writingVolume)
+                        songBeingWritten.add(Note("a1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_asbb -> {
-                        playNote(noteValues.asbb1)
-                        songBeingWritten.add(Note("asbb1", calculateNoteDuration()))
+                        playNote(noteValues.asbb1, writingVolume)
+                        songBeingWritten.add(Note("asbb1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_b -> {
-                        playNote(noteValues.b1)
-                        songBeingWritten.add(Note("b1", calculateNoteDuration()))
+                        playNote(noteValues.b1, writingVolume)
+                        songBeingWritten.add(Note("b1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_c -> {
-                        playNote(noteValues.c1)
-                        songBeingWritten.add(Note("c1", calculateNoteDuration()))
+                        playNote(noteValues.c1, writingVolume)
+                        songBeingWritten.add(Note("c1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_csdb -> {
-                        playNote(noteValues.csdb1)
-                        songBeingWritten.add(Note("csdb1", calculateNoteDuration()))
+                        playNote(noteValues.csdb1, writingVolume)
+                        songBeingWritten.add(Note("csdb1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_d -> {
-                        playNote(noteValues.d1)
-                        songBeingWritten.add(Note("d1", calculateNoteDuration()))
+                        playNote(noteValues.d1, writingVolume)
+                        songBeingWritten.add(Note("d1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_dseb -> {
-                        playNote(noteValues.dseb1)
-                        songBeingWritten.add(Note("dseb1", calculateNoteDuration()))
+                        playNote(noteValues.dseb1, writingVolume)
+                        songBeingWritten.add(Note("dseb1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_e -> {
-                        playNote(noteValues.e1)
-                        songBeingWritten.add(Note("e1", calculateNoteDuration()))
+                        playNote(noteValues.e1, writingVolume)
+                        songBeingWritten.add(Note("e1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_f -> {
-                        playNote(noteValues.f1)
-                        songBeingWritten.add(Note("f1", calculateNoteDuration()))
+                        playNote(noteValues.f1, writingVolume)
+                        songBeingWritten.add(Note("f1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_fsgb -> {
-                        playNote(noteValues.fsgb1)
-                        songBeingWritten.add(Note("fsgb1", calculateNoteDuration()))
+                        playNote(noteValues.fsgb1, writingVolume)
+                        songBeingWritten.add(Note("fsgb1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_g -> {
-                        playNote(noteValues.g1)
-                        songBeingWritten.add(Note("g1", calculateNoteDuration()))
+                        playNote(noteValues.g1, writingVolume)
+                        songBeingWritten.add(Note("g1", calculateNoteDuration(), writingVolume))
                     }
                     R.id.button_main_gsab -> {
-                        playNote(noteValues.gsab1)
-                        songBeingWritten.add(Note("gsab1", calculateNoteDuration()))
+                        playNote(noteValues.gsab1, writingVolume)
+                        songBeingWritten.add(Note("gsab1", calculateNoteDuration(), writingVolume))
                     }
                 }
                     }
                     2 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a2)
-                                songBeingWritten.add(Note("a2", calculateNoteDuration()))
+                                playNote(noteValues.a2, writingVolume)
+                                songBeingWritten.add(Note("a2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb2)
-                                songBeingWritten.add(Note("asbb2", calculateNoteDuration()))
+                                playNote(noteValues.asbb2, writingVolume)
+                                songBeingWritten.add(Note("asbb2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b2)
-                                songBeingWritten.add(Note("b2", calculateNoteDuration()))
+                                playNote(noteValues.b2, writingVolume)
+                                songBeingWritten.add(Note("b2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c2)
-                                songBeingWritten.add(Note("c2", calculateNoteDuration()))
+                                playNote(noteValues.c2, writingVolume)
+                                songBeingWritten.add(Note("c2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb2)
-                                songBeingWritten.add(Note("csdb2", calculateNoteDuration()))
+                                playNote(noteValues.csdb2, writingVolume)
+                                songBeingWritten.add(Note("csdb2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d2)
-                                songBeingWritten.add(Note("d2", calculateNoteDuration()))
+                                playNote(noteValues.d2, writingVolume)
+                                songBeingWritten.add(Note("d2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb2)
-                                songBeingWritten.add(Note("dseb2", calculateNoteDuration()))
+                                playNote(noteValues.dseb2, writingVolume)
+                                songBeingWritten.add(Note("dseb2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e2)
-                                songBeingWritten.add(Note("e2", calculateNoteDuration()))
+                                playNote(noteValues.e2, writingVolume)
+                                songBeingWritten.add(Note("e2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f2)
-                                songBeingWritten.add(Note("f2", calculateNoteDuration()))
+                                playNote(noteValues.f2, writingVolume)
+                                songBeingWritten.add(Note("f2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb2)
-                                songBeingWritten.add(Note("fsgb2", calculateNoteDuration()))
+                                playNote(noteValues.fsgb2, writingVolume)
+                                songBeingWritten.add(Note("fsgb2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g2)
-                                songBeingWritten.add(Note("g2", calculateNoteDuration()))
+                                playNote(noteValues.g2, writingVolume)
+                                songBeingWritten.add(Note("g2", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab2)
-                                songBeingWritten.add(Note("gsab2", calculateNoteDuration()))
+                                playNote(noteValues.gsab2, writingVolume)
+                                songBeingWritten.add(Note("gsab2", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
                     3 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a3)
-                                songBeingWritten.add(Note("a3", calculateNoteDuration()))
+                                playNote(noteValues.a3, writingVolume)
+                                songBeingWritten.add(Note("a3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb3)
-                                songBeingWritten.add(Note("asbb3", calculateNoteDuration()))
+                                playNote(noteValues.asbb3, writingVolume)
+                                songBeingWritten.add(Note("asbb3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b3)
-                                songBeingWritten.add(Note("b3", calculateNoteDuration()))
+                                playNote(noteValues.b3, writingVolume)
+                                songBeingWritten.add(Note("b3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c3)
-                                songBeingWritten.add(Note("c3", calculateNoteDuration()))
+                                playNote(noteValues.c3, writingVolume)
+                                songBeingWritten.add(Note("c3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb3)
-                                songBeingWritten.add(Note("csdb3", calculateNoteDuration()))
+                                playNote(noteValues.csdb3, writingVolume)
+                                songBeingWritten.add(Note("csdb3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d3)
-                                songBeingWritten.add(Note("d3", calculateNoteDuration()))
+                                playNote(noteValues.d3, writingVolume)
+                                songBeingWritten.add(Note("d3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb3)
-                                songBeingWritten.add(Note("dseb3", calculateNoteDuration()))
+                                playNote(noteValues.dseb3, writingVolume)
+                                songBeingWritten.add(Note("dseb3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e3)
-                                songBeingWritten.add(Note("e3", calculateNoteDuration()))
+                                playNote(noteValues.e3, writingVolume)
+                                songBeingWritten.add(Note("e3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f3)
-                                songBeingWritten.add(Note("f3", calculateNoteDuration()))
+                                playNote(noteValues.f3, writingVolume)
+                                songBeingWritten.add(Note("f3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb3)
-                                songBeingWritten.add(Note("fsgb3", calculateNoteDuration()))
+                                playNote(noteValues.fsgb3, writingVolume)
+                                songBeingWritten.add(Note("fsgb3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g3)
-                                songBeingWritten.add(Note("g3", calculateNoteDuration()))
+                                playNote(noteValues.g3, writingVolume)
+                                songBeingWritten.add(Note("g3", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab3)
-                                songBeingWritten.add(Note("gsab3", calculateNoteDuration()))
+                                playNote(noteValues.gsab3, writingVolume)
+                                songBeingWritten.add(Note("gsab3", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
                     4 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a4)
-                                songBeingWritten.add(Note("a4", calculateNoteDuration()))
+                                playNote(noteValues.a4, writingVolume)
+                                songBeingWritten.add(Note("a4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb4)
-                                songBeingWritten.add(Note("asbb4", calculateNoteDuration()))
+                                playNote(noteValues.asbb4, writingVolume)
+                                songBeingWritten.add(Note("asbb4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b4)
-                                songBeingWritten.add(Note("b4", calculateNoteDuration()))
+                                playNote(noteValues.b4, writingVolume)
+                                songBeingWritten.add(Note("b4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c4)
-                                songBeingWritten.add(Note("c4", calculateNoteDuration()))
+                                playNote(noteValues.c4, writingVolume)
+                                songBeingWritten.add(Note("c4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb4)
-                                songBeingWritten.add(Note("csdb4", calculateNoteDuration()))
+                                playNote(noteValues.csdb4, writingVolume)
+                                songBeingWritten.add(Note("csdb4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d4)
-                                songBeingWritten.add(Note("d4", calculateNoteDuration()))
+                                playNote(noteValues.d4, writingVolume)
+                                songBeingWritten.add(Note("d4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb4)
-                                songBeingWritten.add(Note("dseb4", calculateNoteDuration()))
+                                playNote(noteValues.dseb4, writingVolume)
+                                songBeingWritten.add(Note("dseb4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e4)
-                                songBeingWritten.add(Note("e4", calculateNoteDuration()))
+                                playNote(noteValues.e4, writingVolume)
+                                songBeingWritten.add(Note("e4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f4)
-                                songBeingWritten.add(Note("f4", calculateNoteDuration()))
+                                playNote(noteValues.f4, writingVolume)
+                                songBeingWritten.add(Note("f4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb4)
-                                songBeingWritten.add(Note("fsgb4", calculateNoteDuration()))
+                                playNote(noteValues.fsgb4, writingVolume)
+                                songBeingWritten.add(Note("fsgb4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g4)
-                                songBeingWritten.add(Note("g4", calculateNoteDuration()))
+                                playNote(noteValues.g4, writingVolume)
+                                songBeingWritten.add(Note("g4", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab4)
-                                songBeingWritten.add(Note("gsab4", calculateNoteDuration()))
+                                playNote(noteValues.gsab4, writingVolume)
+                                songBeingWritten.add(Note("gsab4", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
                     5 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a5)
-                                songBeingWritten.add(Note("a5", calculateNoteDuration()))
+                                playNote(noteValues.a5, writingVolume)
+                                songBeingWritten.add(Note("a5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb5)
-                                songBeingWritten.add(Note("asbb5", calculateNoteDuration()))
+                                playNote(noteValues.asbb5, writingVolume)
+                                songBeingWritten.add(Note("asbb5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b5)
-                                songBeingWritten.add(Note("b5", calculateNoteDuration()))
+                                playNote(noteValues.b5, writingVolume)
+                                songBeingWritten.add(Note("b5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c5)
-                                songBeingWritten.add(Note("c5", calculateNoteDuration()))
+                                playNote(noteValues.c5, writingVolume)
+                                songBeingWritten.add(Note("c5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb5)
-                                songBeingWritten.add(Note("csdb5", calculateNoteDuration()))
+                                playNote(noteValues.csdb5, writingVolume)
+                                songBeingWritten.add(Note("csdb5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d5)
-                                songBeingWritten.add(Note("d5", calculateNoteDuration()))
+                                playNote(noteValues.d5, writingVolume)
+                                songBeingWritten.add(Note("d5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb5)
-                                songBeingWritten.add(Note("dseb5", calculateNoteDuration()))
+                                playNote(noteValues.dseb5, writingVolume)
+                                songBeingWritten.add(Note("dseb5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e5)
-                                songBeingWritten.add(Note("e5", calculateNoteDuration()))
+                                playNote(noteValues.e5, writingVolume)
+                                songBeingWritten.add(Note("e5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f5)
-                                songBeingWritten.add(Note("f5", calculateNoteDuration()))
+                                playNote(noteValues.f5, writingVolume)
+                                songBeingWritten.add(Note("f5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb5)
-                                songBeingWritten.add(Note("fsgb5", calculateNoteDuration()))
+                                playNote(noteValues.fsgb5, writingVolume)
+                                songBeingWritten.add(Note("fsgb5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g5)
-                                songBeingWritten.add(Note("g5", calculateNoteDuration()))
+                                playNote(noteValues.g5, writingVolume)
+                                songBeingWritten.add(Note("g5", calculateNoteDuration(), writingVolume))
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab5)
-                                songBeingWritten.add(Note("gsab5", calculateNoteDuration()))
+                                playNote(noteValues.gsab5, writingVolume)
+                                songBeingWritten.add(Note("gsab5", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
                     6 -> {
                         when(v?.id) {
                             R.id.button_main_c -> {
-                                playNote(noteValues.c6)
-                                songBeingWritten.add(Note("c6", calculateNoteDuration()))
+                                playNote(noteValues.c6, writingVolume)
+                                songBeingWritten.add(Note("c6", calculateNoteDuration(), writingVolume))
                             }
                         }
                     }
@@ -421,220 +428,220 @@ class MainActivity : AppCompatActivity() {
                     0 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a0)
+                                playNote(noteValues.a0, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb0)
+                                playNote(noteValues.asbb0, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b0)
+                                playNote(noteValues.b0, writingVolume)
                             }
                         }
                     }
                     1 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a1)
+                                playNote(noteValues.a1, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb1)
+                                playNote(noteValues.asbb1, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b1)
+                                playNote(noteValues.b1, writingVolume)
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c1)
+                                playNote(noteValues.c1, writingVolume)
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb1)
+                                playNote(noteValues.csdb1, writingVolume)
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d1)
+                                playNote(noteValues.d1, writingVolume)
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb1)
+                                playNote(noteValues.dseb1, writingVolume)
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e1)
+                                playNote(noteValues.e1, writingVolume)
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f1)
+                                playNote(noteValues.f1, writingVolume)
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb1)
+                                playNote(noteValues.fsgb1, writingVolume)
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g1)
+                                playNote(noteValues.g1, writingVolume)
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab1)
+                                playNote(noteValues.gsab1, writingVolume)
                             }
                         }
                     }
                     2 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a2)
+                                playNote(noteValues.a2, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb2)
+                                playNote(noteValues.asbb2, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b2)
+                                playNote(noteValues.b2, writingVolume)
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c2)
+                                playNote(noteValues.c2, writingVolume)
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb2)
+                                playNote(noteValues.csdb2, writingVolume)
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d2)
+                                playNote(noteValues.d2, writingVolume)
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb2)
+                                playNote(noteValues.dseb2, writingVolume)
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e2)
+                                playNote(noteValues.e2, writingVolume)
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f2)
+                                playNote(noteValues.f2, writingVolume)
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb2)
+                                playNote(noteValues.fsgb2, writingVolume)
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g2)
+                                playNote(noteValues.g2, writingVolume)
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab2)
+                                playNote(noteValues.gsab2, writingVolume)
                             }
                         }
                     }
                     3 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a3)
+                                playNote(noteValues.a3, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb3)
+                                playNote(noteValues.asbb3, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b3)
+                                playNote(noteValues.b3, writingVolume)
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c3)
+                                playNote(noteValues.c3, writingVolume)
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb3)
+                                playNote(noteValues.csdb3, writingVolume)
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d3)
+                                playNote(noteValues.d3, writingVolume)
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb3)
+                                playNote(noteValues.dseb3, writingVolume)
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e3)
+                                playNote(noteValues.e3, writingVolume)
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f3)
+                                playNote(noteValues.f3, writingVolume)
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb3)
+                                playNote(noteValues.fsgb3, writingVolume)
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g3)
+                                playNote(noteValues.g3, writingVolume)
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab3)
+                                playNote(noteValues.gsab3, writingVolume)
                             }
                         }
                     }
                     4 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a4)
+                                playNote(noteValues.a4, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb4)
+                                playNote(noteValues.asbb4, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b4)
+                                playNote(noteValues.b4, writingVolume)
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c4)
+                                playNote(noteValues.c4, writingVolume)
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb4)
+                                playNote(noteValues.csdb4, writingVolume)
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d4)
+                                playNote(noteValues.d4, writingVolume)
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb4)
+                                playNote(noteValues.dseb4, writingVolume)
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e4)
+                                playNote(noteValues.e4, writingVolume)
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f4)
+                                playNote(noteValues.f4, writingVolume)
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb4)
+                                playNote(noteValues.fsgb4, writingVolume)
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g4)
+                                playNote(noteValues.g4, writingVolume)
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab4)
+                                playNote(noteValues.gsab4, writingVolume)
                             }
                         }
                     }
                     5 -> {
                         when(v?.id) {
                             R.id.button_main_a -> {
-                                playNote(noteValues.a5)
+                                playNote(noteValues.a5, writingVolume)
                             }
                             R.id.button_main_asbb -> {
-                                playNote(noteValues.asbb5)
+                                playNote(noteValues.asbb5, writingVolume)
                             }
                             R.id.button_main_b -> {
-                                playNote(noteValues.b5)
+                                playNote(noteValues.b5, writingVolume)
                             }
                             R.id.button_main_c -> {
-                                playNote(noteValues.c5)
+                                playNote(noteValues.c5, writingVolume)
                             }
                             R.id.button_main_csdb -> {
-                                playNote(noteValues.csdb5)
+                                playNote(noteValues.csdb5, writingVolume)
                             }
                             R.id.button_main_d -> {
-                                playNote(noteValues.d5)
+                                playNote(noteValues.d5, writingVolume)
                             }
                             R.id.button_main_dseb -> {
-                                playNote(noteValues.dseb5)
+                                playNote(noteValues.dseb5, writingVolume)
                             }
                             R.id.button_main_e -> {
-                                playNote(noteValues.e5)
+                                playNote(noteValues.e5, writingVolume)
                             }
                             R.id.button_main_f -> {
-                                playNote(noteValues.f5)
+                                playNote(noteValues.f5, writingVolume)
                             }
                             R.id.button_main_fsgb -> {
-                                playNote(noteValues.fsgb5)
+                                playNote(noteValues.fsgb5, writingVolume)
                             }
                             R.id.button_main_g -> {
-                                playNote(noteValues.g5)
+                                playNote(noteValues.g5, writingVolume)
                             }
                             R.id.button_main_gsab -> {
-                                playNote(noteValues.gsab5)
+                                playNote(noteValues.gsab5, writingVolume)
                             }
                         }
                     }
                     6 -> {
                         when(v?.id) {
                             R.id.button_main_c -> {
-                                playNote(noteValues.c6)
+                                playNote(noteValues.c6, writingVolume)
                             }
                         }
                     }
@@ -653,13 +660,13 @@ class MainActivity : AppCompatActivity() {
                             if (binding.editTextMainSongName.text.isNotBlank()) {
                                 loadSong()
                                 GlobalScope.launch {
-                                    playNote("rest")
+                                    playNote("rest", writingVolume)
                                     delay(500)
                                     playSong(song)
                                 }
                             } else {
                                 GlobalScope.launch {
-                                    playNote("rest")
+                                    playNote("rest", writingVolume)
                                     delay(500)
                                     playSong(songBeingWritten)
                                 }
@@ -687,7 +694,7 @@ class MainActivity : AppCompatActivity() {
         //i in song.indices - goes through the entire list
         //for(item in list) is the enhanced for loop
         for(i in song.indices) {
-            playNote(song[i].note)
+            playNote(song[i].note, song[i].volume)
             delay(song[i].duration)
             if(!isSongCurrentlyPlaying) {
                 break
@@ -988,7 +995,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonMainRest.setOnClickListener {
             if(currentlyWriting) {
-                songBeingWritten.add(Note("rest", calculateNoteDuration()))
+                songBeingWritten.add(Note("rest", calculateNoteDuration(), writingVolume))
             }
         }
 
@@ -1019,6 +1026,54 @@ class MainActivity : AppCompatActivity() {
             displayAllSongs()
         }
 
+        binding.buttonMainDynamicSelection.setOnClickListener {
+            for(i in groupList.indices) {
+                groupList.get(i).visibility = View.GONE
+            }
+            binding.groupMainDynamics.visibility = View.VISIBLE
+        }
+
+        binding.buttonMainFfff.setOnClickListener {
+            writingVolume = 1.8f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainFff.setOnClickListener {
+            writingVolume = 1.6f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainFf.setOnClickListener {
+            writingVolume = 1.4f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainForte.setOnClickListener {
+            writingVolume = 1.2f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainMf.setOnClickListener {
+            writingVolume = 1f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainMp.setOnClickListener {
+            writingVolume = 0.83f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainP.setOnClickListener {
+            writingVolume = 0.66f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainPp.setOnClickListener {
+            writingVolume = 0.5f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainPpp.setOnClickListener {
+            writingVolume = 0.33f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainPppp.setOnClickListener {
+            writingVolume - 0.16f
+            setDynamicButtonColors(it as Button)
+        }
+
 
 
     }
@@ -1038,6 +1093,26 @@ class MainActivity : AppCompatActivity() {
         noteTypeButtons.add(binding.buttonMainSixteenthNote)
         noteTypeButtons.add(binding.buttonMainThirtySecondNote)
         noteTypeButtons.add(binding.buttonMainInstant)
+    }
+
+    private fun setDynamicButtonColors(button: Button) {
+        for(i in dynamicButtons.indices) {
+            dynamicButtons.get(i).setBackgroundColor(Color.rgb(110, 0, 248))
+        }
+        button.setBackgroundColor(Color.rgb(0,200,0))
+    }
+
+    private fun loadDynamicButtonsArray() {
+        dynamicButtons.add(binding.buttonMainFfff)
+        dynamicButtons.add(binding.buttonMainFff)
+        dynamicButtons.add(binding.buttonMainFf)
+        dynamicButtons.add(binding.buttonMainForte)
+        dynamicButtons.add(binding.buttonMainMf)
+        dynamicButtons.add(binding.buttonMainMp)
+        dynamicButtons.add(binding.buttonMainP)
+        dynamicButtons.add(binding.buttonMainPp)
+        dynamicButtons.add(binding.buttonMainPpp)
+        dynamicButtons.add(binding.buttonMainPppp)
     }
 
     @SuppressLint("SetTextI18n")
@@ -1150,6 +1225,7 @@ class MainActivity : AppCompatActivity() {
         groupList.add(binding.groupMainNotes)
         groupList.add(binding.groupMainDurations)
         groupList.add(binding.groupMainSongDisplay)
+        groupList.add(binding.groupMainDynamics)
     }
 
     private fun deleteSong() {

@@ -1,4 +1,4 @@
-//create a tutorial
+//create a system to cycle through the tutorial slides. then, work on the presentation.
 
 package com.mistershorr.soundboard
 
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
 
-    var dynamicButtons :ArrayList<Button> = ArrayList<Button>()
+    var dynamicButtons: ArrayList<Button> = ArrayList<Button>()
 
     var currentlyWriting: Boolean = false
 
@@ -61,7 +61,11 @@ class MainActivity : AppCompatActivity() {
 
     var currentTutorialSlide: Int = 1
 
-    var writingVolume: Float = 1f
+    var writingVolume: Float = 0.6f
+
+    var notesUndone: ArrayList<Note> = ArrayList<Note>()
+
+    var redone: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +79,6 @@ class MainActivity : AppCompatActivity() {
 
         loadNoteTypeButtonsArray()
         loadDynamicButtonsArray()
-
-        binding.buttonMainMf.setBackgroundColor(Color.rgb(0, 200, 0))
 
         loadGroupList()
 
@@ -1031,51 +1033,110 @@ class MainActivity : AppCompatActivity() {
                 groupList.get(i).visibility = View.GONE
             }
             binding.groupMainDynamics.visibility = View.VISIBLE
+            areSongsDisplayed = false
         }
 
         binding.buttonMainFfff.setOnClickListener {
-            writingVolume = 1.8f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainFff.setOnClickListener {
-            writingVolume = 1.6f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainFf.setOnClickListener {
-            writingVolume = 1.4f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainForte.setOnClickListener {
-            writingVolume = 1.2f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainMf.setOnClickListener {
             writingVolume = 1f
             setDynamicButtonColors(it as Button)
         }
+        binding.buttonMainFff.setOnClickListener {
+            writingVolume = 0.9f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainFf.setOnClickListener {
+            writingVolume = 0.8f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainForte.setOnClickListener {
+            writingVolume = 0.7f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainMf.setOnClickListener {
+            writingVolume = 0.6f
+            setDynamicButtonColors(it as Button)
+        }
         binding.buttonMainMp.setOnClickListener {
-            writingVolume = 0.83f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainP.setOnClickListener {
-            writingVolume = 0.66f
-            setDynamicButtonColors(it as Button)
-        }
-        binding.buttonMainPp.setOnClickListener {
             writingVolume = 0.5f
             setDynamicButtonColors(it as Button)
         }
+        binding.buttonMainP.setOnClickListener {
+            writingVolume = 0.4f
+            setDynamicButtonColors(it as Button)
+        }
+        binding.buttonMainPp.setOnClickListener {
+            writingVolume = 0.3f
+            setDynamicButtonColors(it as Button)
+        }
         binding.buttonMainPpp.setOnClickListener {
-            writingVolume = 0.33f
+            writingVolume = 0.2f
             setDynamicButtonColors(it as Button)
         }
         binding.buttonMainPppp.setOnClickListener {
-            writingVolume - 0.16f
+            writingVolume = 0.1f
             setDynamicButtonColors(it as Button)
         }
 
+        binding.buttonMainUndo.setOnClickListener {
+            if(redone) {
+                notesUndone = ArrayList<Note>()
+                redone = false
+            }
+            if(songBeingWritten.isNotEmpty()) {
+                notesUndone.add(songBeingWritten.removeLast())
+            }
+        }
 
+        binding.buttonMainRedo.setOnClickListener {
+            if(notesUndone.isNotEmpty()) {
+                songBeingWritten.add(notesUndone.removeLast())
+            }
+            redone = true
+        }
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateTutorial() {
+        when (currentTutorialSlide) {
+            1 -> {
+                binding.textViewMainTutorials.text = "If the song name is blank, the play, delete, and write controls affect the current unnamed in-progress song."
+            }
+            2 -> {
+                binding.textViewMainTutorials.text = "To save the current unnamed song, type in a name and then press save."
+            }
+            3 -> {
+                binding.textViewMainTutorials.text = "If the song name is not blank, the play, delete, and write controls affect the named song."
+            }
+            4 -> {
+                binding.textViewMainTutorials.text = "Pressing \"Start Writing\" when the song name box is not blank will overwrite any unnamed, unsaved song you've been working on."
+            }
+            5 -> {
+                binding.textViewMainTutorials.text = "Additionally, pressing \"Start Writing\" when the song name box is not blank will remove any edits you have made to the named song you are working on."
+            }
+            6 -> {
+                binding.textViewMainTutorials.text = "Saving a song with the same name as a song that has already been saved will overwrite the latter."
+            }
+            7 -> {
+                binding.textViewMainTutorials.text = "If you undo a note addition after redoing one, all other available redos will be deleted."
+            }
+            8 -> {
+                binding.textViewMainTutorials.text = "If you want to write triplets, set the bpm to 3/2 of its original value. Then write using the duration that corresponds to the triplet duration you want"
+            }
+            9 -> {
+                binding.textViewMainTutorials.text = "Example: for 8th note triplets at 120 bpm, set the bpm to 180 and write using eight notes."
+            }
+            10 -> {
+                binding.textViewMainTutorials.text = "If you want to write chords, use the \"Instant\" duration. The last note of the chord should be the duration you want the chord to last for."
+            }
+            11 -> {
+                binding.textViewMainTutorials.text = "Example: For a quarter note C Major chord, the C and E should be instant, and the G should be a quarter note."
+            }
+            12 -> {
+                binding.textViewMainTutorials.text = "End of tutorial slides."
+            }
+
+        }
     }
 
     private fun setNoteTypeButtonColors(button: Button) {
@@ -1117,47 +1178,49 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateNoteButtons() {
-        if(octave == 0) {
-            binding.buttonMainA.text = "A$octave"
-            binding.buttonMainAsbb.text = "A♯/B♭$octave"
-            binding.buttonMainB.text = "B$octave"
-            binding.buttonMainC.text = "N/A"
-            binding.buttonMainCsdb.text = "N/A"
-            binding.buttonMainD.text = "N/A"
-            binding.buttonMainDseb.text = "N/A"
-            binding.buttonMainE.text = "N/A"
-            binding.buttonMainF.text = "N/A"
-            binding.buttonMainFsgb.text = "N/A"
-            binding.buttonMainG.text = "N/A"
-            binding.buttonMainGsab.text = "N/A"
-        }
-        else if (octave == 6) {
-            binding.buttonMainA.text = "N/A"
-            binding.buttonMainAsbb.text = "N/A"
-            binding.buttonMainB.text = "N/A"
-            binding.buttonMainC.text = "C$octave"
-            binding.buttonMainCsdb.text = "N/A"
-            binding.buttonMainD.text = "N/A"
-            binding.buttonMainDseb.text = "N/A"
-            binding.buttonMainE.text = "N/A"
-            binding.buttonMainF.text = "N/A"
-            binding.buttonMainFsgb.text = "N/A"
-            binding.buttonMainG.text = "N/A"
-            binding.buttonMainGsab.text = "N/A"
-        }
-        else {
-            binding.buttonMainA.text = "A$octave"
-            binding.buttonMainAsbb.text = "A♯/B♭$octave"
-            binding.buttonMainB.text = "B$octave"
-            binding.buttonMainC.text = "C$octave"
-            binding.buttonMainCsdb.text = "C♯/D♭$octave"
-            binding.buttonMainD.text = "D$octave"
-            binding.buttonMainDseb.text = "D♯/E♭$octave"
-            binding.buttonMainE.text = "E$octave"
-            binding.buttonMainF.text = "F$octave"
-            binding.buttonMainFsgb.text = "F♯/G♭$octave"
-            binding.buttonMainG.text = "G$octave"
-            binding.buttonMainGsab.text = "G♯/A♭$octave"
+        when (octave) {
+            0 -> {
+                binding.buttonMainA.text = "A$octave"
+                binding.buttonMainAsbb.text = "A♯/B♭$octave"
+                binding.buttonMainB.text = "B$octave"
+                binding.buttonMainC.text = "N/A"
+                binding.buttonMainCsdb.text = "N/A"
+                binding.buttonMainD.text = "N/A"
+                binding.buttonMainDseb.text = "N/A"
+                binding.buttonMainE.text = "N/A"
+                binding.buttonMainF.text = "N/A"
+                binding.buttonMainFsgb.text = "N/A"
+                binding.buttonMainG.text = "N/A"
+                binding.buttonMainGsab.text = "N/A"
+            }
+            6 -> {
+                binding.buttonMainA.text = "N/A"
+                binding.buttonMainAsbb.text = "N/A"
+                binding.buttonMainB.text = "N/A"
+                binding.buttonMainC.text = "C$octave"
+                binding.buttonMainCsdb.text = "N/A"
+                binding.buttonMainD.text = "N/A"
+                binding.buttonMainDseb.text = "N/A"
+                binding.buttonMainE.text = "N/A"
+                binding.buttonMainF.text = "N/A"
+                binding.buttonMainFsgb.text = "N/A"
+                binding.buttonMainG.text = "N/A"
+                binding.buttonMainGsab.text = "N/A"
+            }
+            else -> {
+                binding.buttonMainA.text = "A$octave"
+                binding.buttonMainAsbb.text = "A♯/B♭$octave"
+                binding.buttonMainB.text = "B$octave"
+                binding.buttonMainC.text = "C$octave"
+                binding.buttonMainCsdb.text = "C♯/D♭$octave"
+                binding.buttonMainD.text = "D$octave"
+                binding.buttonMainDseb.text = "D♯/E♭$octave"
+                binding.buttonMainE.text = "E$octave"
+                binding.buttonMainF.text = "F$octave"
+                binding.buttonMainFsgb.text = "F♯/G♭$octave"
+                binding.buttonMainG.text = "G$octave"
+                binding.buttonMainGsab.text = "G♯/A♭$octave"
+            }
         }
     }
 
@@ -1232,6 +1295,7 @@ class MainActivity : AppCompatActivity() {
 
         if(binding.editTextMainSongName.text.isBlank()) {
             songBeingWritten = ArrayList<Note>()
+            notesUndone = ArrayList<Note>()
         }
         else {
 

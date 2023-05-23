@@ -1,5 +1,3 @@
-//create a system to cycle through the tutorial slides. then, work on the presentation.
-
 package com.mistershorr.soundboard
 
 import android.annotation.SuppressLint

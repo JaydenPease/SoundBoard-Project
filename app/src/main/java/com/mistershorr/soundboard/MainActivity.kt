@@ -26,7 +26,7 @@ import java.util.function.BiPredicate
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG = "MainActivity"
+    private val TAG = "MainActivity"
 
 
     //instance variable for the view binding
@@ -34,38 +34,40 @@ class MainActivity : AppCompatActivity() {
 
     var noteValues = NoteValues()
 
-    lateinit var soundPool : SoundPool
+    private lateinit var soundPool : SoundPool
     var song: ArrayList<Note> = ArrayList<Note>()
 
     var songBeingWritten: ArrayList<Note> = ArrayList<Note>()
 
     var octave: Int = 1
 
-    var selectedNoteType: Int = 4
+    private var selectedNoteType: Int = 4
 
-    var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
+    private var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
 
-    var dynamicButtons: ArrayList<Button> = ArrayList<Button>()
+    private var dynamicButtons: ArrayList<Button> = ArrayList<Button>()
 
     var currentlyWriting: Boolean = false
 
-    var noteMap = HashMap<String, Int>()
+    private var noteMap = HashMap<String, Int>()
 
-    var listOfSavedSongs: ArrayList<String> = ArrayList<String>()
+    private var listOfSavedSongs: ArrayList<String> = ArrayList<String>()
 
-    var groupList: ArrayList<Group> = ArrayList<Group>()
+    private var groupList: ArrayList<Group> = ArrayList<Group>()
 
-    var areSongsDisplayed: Boolean = false
+    private var areSongsDisplayed: Boolean = false
 
     var isSongCurrentlyPlaying: Boolean = false
 
-    var currentTutorialSlide: Int = 1
+    private var currentTutorialSlide: Int = 1
 
     var writingVolume: Float = 0.6f
 
-    var notesUndone: ArrayList<Note> = ArrayList<Note>()
+    private var notesUndone: ArrayList<Note> = ArrayList<Note>()
 
-    var redone: Boolean = false
+    private var redone: Boolean = false
+
+    private val soundBoardListener = SoundBoardListener()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         loadGroupList()
 
         for(i in groupList.indices) {
-            groupList.get(i).visibility = View.GONE
+            groupList[i].visibility = View.GONE
         }
         binding.groupMainNotes.visibility = View.VISIBLE
 
@@ -92,14 +94,7 @@ class MainActivity : AppCompatActivity() {
         setListeners()
 
 
-
-
-
     }
-
-
-
-
 
 
     private fun initializeSoundPool() {
@@ -128,8 +123,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private inner class SoundBoardListener : View.OnClickListener {
+        @SuppressLint("SetTextI18n")
         override fun onClick(v: View?) {
             if(currentlyWriting) {
+
+                if(notesUndone.isNotEmpty()) {
+                    notesUndone = ArrayList<Note>()
+                }
 
                 when(octave) {
                     0 -> {
@@ -687,6 +687,7 @@ class MainActivity : AppCompatActivity() {
 
     // suspend keyword marks the function to be used in a coroutine
     // (so that the default delay function can work)
+    @SuppressLint("SetTextI18n")
     private suspend fun playSong(song: List<Note>) {
 
 
@@ -779,7 +780,6 @@ class MainActivity : AppCompatActivity() {
             0
         }
     }
-
 
     private fun loadSoundPoolThingy1() {
         noteValues.a0 = soundPool.load(this, R.raw.a0, 1)
@@ -920,9 +920,17 @@ class MainActivity : AppCompatActivity() {
         noteMap["gsab5"] = noteValues.gsab5
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setListeners() {
-        val soundBoardListener = SoundBoardListener()
+
+        setNoteButtonListeners()
+        setDurationButtonListeners()
+        setDynamicButtonListeners()
+        setSongControlButtonListeners()
+        setRightHandMenuButtonListeners()
+
+    }
+
+    private fun setNoteButtonListeners() {
         binding.buttonMainA.setOnClickListener(soundBoardListener)
         binding.buttonMainAsbb.setOnClickListener(soundBoardListener)
         binding.buttonMainB.setOnClickListener(soundBoardListener)
@@ -936,23 +944,6 @@ class MainActivity : AppCompatActivity() {
         binding.buttonMainG.setOnClickListener(soundBoardListener)
         binding.buttonMainGsab.setOnClickListener(soundBoardListener)
 
-        binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
-
-
-        binding.buttonMainStartStopWriting.setOnClickListener {
-            currentlyWriting = !currentlyWriting
-            if(currentlyWriting) {
-                binding.buttonMainStartStopWriting.text = "Stop Writing"
-                if(binding.editTextMainSongName.text.isNotBlank()) {
-                    loadSongToBeEdited()
-                }
-            }
-            else {
-                binding.buttonMainStartStopWriting.text = "Start Writing"
-            }
-
-        }
-
         binding.buttonMainOctaveUp.setOnClickListener {
             if(octave < 6) {
                 octave++
@@ -965,7 +956,14 @@ class MainActivity : AppCompatActivity() {
                 updateNoteButtons()
             }
         }
+        binding.buttonMainRest.setOnClickListener {
+            if(currentlyWriting) {
+                songBeingWritten.add(Note("rest", calculateNoteDuration(), writingVolume))
+            }
+        }
+    }
 
+    private fun setDurationButtonListeners() {
         binding.buttonMainWholeNote.setOnClickListener {
             selectedNoteType = 1
             setNoteTypeButtonColors(it as Button)
@@ -994,48 +992,9 @@ class MainActivity : AppCompatActivity() {
             selectedNoteType = 0
             setNoteTypeButtonColors(it as Button)
         }
+    }
 
-        binding.buttonMainRest.setOnClickListener {
-            if(currentlyWriting) {
-                songBeingWritten.add(Note("rest", calculateNoteDuration(), writingVolume))
-            }
-        }
-
-        binding.buttonMainDelete.setOnClickListener {
-            deleteSong()
-        }
-
-        binding.buttonMainDurationSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList.get(i).visibility = View.GONE
-            }
-            binding.groupMainDurations.visibility = View.VISIBLE
-            areSongsDisplayed = false
-        }
-        binding.buttonMainNoteSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList.get(i).visibility = View.GONE
-            }
-            binding.groupMainNotes.visibility = View.VISIBLE
-            areSongsDisplayed = false
-        }
-
-        binding.buttonMainSave.setOnClickListener {
-            saveSong()
-        }
-
-        binding.buttonMainDisplayAllSongs.setOnClickListener {
-            displayAllSongs()
-        }
-
-        binding.buttonMainDynamicSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList.get(i).visibility = View.GONE
-            }
-            binding.groupMainDynamics.visibility = View.VISIBLE
-            areSongsDisplayed = false
-        }
-
+    private fun setDynamicButtonListeners() {
         binding.buttonMainFfff.setOnClickListener {
             writingVolume = 1f
             setDynamicButtonColors(it as Button)
@@ -1076,6 +1035,63 @@ class MainActivity : AppCompatActivity() {
             writingVolume = 0.1f
             setDynamicButtonColors(it as Button)
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setSongControlButtonListeners() {
+        binding.buttonMainPlaySong.setOnClickListener(soundBoardListener)
+
+        binding.buttonMainStartStopWriting.setOnClickListener {
+            currentlyWriting = !currentlyWriting
+            if(currentlyWriting) {
+                binding.buttonMainStartStopWriting.text = "Stop Writing"
+                if(binding.editTextMainSongName.text.isNotBlank()) {
+                    loadSongToBeEdited()
+                }
+            }
+            else {
+                binding.buttonMainStartStopWriting.text = "Start Writing"
+            }
+        }
+
+        binding.buttonMainDelete.setOnClickListener {
+            deleteSong()
+        }
+
+        binding.buttonMainSave.setOnClickListener {
+            saveSong()
+        }
+
+
+    }
+
+    private fun setRightHandMenuButtonListeners() {
+        binding.buttonMainDurationSelection.setOnClickListener {
+            for(i in groupList.indices) {
+                groupList[i].visibility = View.GONE
+            }
+            binding.groupMainDurations.visibility = View.VISIBLE
+            areSongsDisplayed = false
+        }
+        binding.buttonMainNoteSelection.setOnClickListener {
+            for(i in groupList.indices) {
+                groupList[i].visibility = View.GONE
+            }
+            binding.groupMainNotes.visibility = View.VISIBLE
+            areSongsDisplayed = false
+        }
+
+        binding.buttonMainDynamicSelection.setOnClickListener {
+            for(i in groupList.indices) {
+                groupList[i].visibility = View.GONE
+            }
+            binding.groupMainDynamics.visibility = View.VISIBLE
+            areSongsDisplayed = false
+        }
+
+        binding.buttonMainDisplayAllSongs.setOnClickListener {
+            displayAllSongs()
+        }
 
         binding.buttonMainUndo.setOnClickListener {
             if(redone) {
@@ -1094,6 +1110,19 @@ class MainActivity : AppCompatActivity() {
             redone = true
         }
 
+        binding.buttonMainTutorialNext.setOnClickListener {
+            if(currentTutorialSlide < 14) {
+                currentTutorialSlide++
+                updateTutorial()
+            }
+        }
+
+        binding.buttonMainTutorialPrevious.setOnClickListener {
+            if(currentTutorialSlide > 1) {
+                currentTutorialSlide--
+                updateTutorial()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -1118,21 +1147,27 @@ class MainActivity : AppCompatActivity() {
                 binding.textViewMainTutorials.text = "Saving a song with the same name as a song that has already been saved will overwrite the latter."
             }
             7 -> {
-                binding.textViewMainTutorials.text = "If you undo a note addition after redoing one, all other available redos will be deleted."
+                binding.textViewMainTutorials.text = "Available redos are deleted when you write a new note."
             }
             8 -> {
-                binding.textViewMainTutorials.text = "If you want to write triplets, set the bpm to 3/2 of its original value. Then write using the duration that corresponds to the triplet duration you want"
+                binding.textViewMainTutorials.text = "If you undo a note addition after redoing one, all other available redos will be deleted."
             }
             9 -> {
-                binding.textViewMainTutorials.text = "Example: for 8th note triplets at 120 bpm, set the bpm to 180 and write using eight notes."
+                binding.textViewMainTutorials.text = "Undoes and Redos only affect notes. You cannot undo and redo other actions."
             }
             10 -> {
-                binding.textViewMainTutorials.text = "If you want to write chords, use the \"Instant\" duration. The last note of the chord should be the duration you want the chord to last for."
+                binding.textViewMainTutorials.text = "If you want to write triplets, set the bpm to 3/2 of its original value. Then write using the duration that corresponds to the triplet duration you want."
             }
             11 -> {
-                binding.textViewMainTutorials.text = "Example: For a quarter note C Major chord, the C and E should be instant, and the G should be a quarter note."
+                binding.textViewMainTutorials.text = "Example: for 8th note triplets at 120 bpm, set the bpm to 180 and write using eight notes."
             }
             12 -> {
+                binding.textViewMainTutorials.text = "If you want to write chords, use the \"Instant\" duration. The last note of the chord should be the duration you want the chord to last for."
+            }
+            13 -> {
+                binding.textViewMainTutorials.text = "Example: For a quarter note C Major chord, the C and E should be instant, and the G should be a quarter note."
+            }
+            14 -> {
                 binding.textViewMainTutorials.text = "End of tutorial slides."
             }
 
@@ -1141,7 +1176,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setNoteTypeButtonColors(button: Button) {
         for(i in noteTypeButtons.indices) {
-            noteTypeButtons.get(i).setBackgroundColor(Color.rgb(110, 0, 248))
+            noteTypeButtons[i].setBackgroundColor(Color.rgb(110, 0, 248))
         }
         button.setBackgroundColor(Color.rgb(0, 200, 0))
     }
@@ -1158,7 +1193,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDynamicButtonColors(button: Button) {
         for(i in dynamicButtons.indices) {
-            dynamicButtons.get(i).setBackgroundColor(Color.rgb(110, 0, 248))
+            dynamicButtons[i].setBackgroundColor(Color.rgb(110, 0, 248))
         }
         button.setBackgroundColor(Color.rgb(0,200,0))
     }
@@ -1269,12 +1304,13 @@ class MainActivity : AppCompatActivity() {
         } }
 
         for(i in listOfSavedSongs.indices) {
-            listOfSavedSongs.set(i, listOfSavedSongs.get(i).replace(this.filesDir.toString() + "/", "").replace(".json", ""))
-            Log.d(TAG, listOfSavedSongs.get(i))
+            listOfSavedSongs[i] =
+                listOfSavedSongs[i].replace(this.filesDir.toString() + "/", "").replace(".json", "")
+            Log.d(TAG, listOfSavedSongs[i])
         }
 
         for(i in groupList.indices) {
-            groupList.get(i).visibility = View.GONE
+            groupList[i].visibility = View.GONE
         }
         binding.groupMainSongDisplay.visibility = View.VISIBLE
 

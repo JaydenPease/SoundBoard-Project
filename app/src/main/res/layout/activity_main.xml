@@ -10,6 +10,7 @@
         android:id="@+id/group_main_notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:constraint_referenced_ids="button_main_c,button_main_csdb,button_main_d,button_main_dseb,button_main_e,button_main_f,button_main_fsgb,button_main_g,button_main_gsab,button_main_a,button_main_asbb,button_main_b,button_main_octaveDown,button_main_octaveUp,button_main_rest"
         tools:visibility="gone" />
 
@@ -168,6 +169,7 @@
         android:id="@+id/group_main_durations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="button_main_wholeNote,button_main_halfNote,button_main_quarterNote,button_main_eighthNote,button_main_sixteenthNote,button_main_thirtySecondNote,button_main_instant"
         tools:visibility="gone" />
 
@@ -324,6 +326,7 @@
         android:id="@+id/group_main_songDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="guideline_main_endOfDisplayedSongs,textView_main_displayedSongs"
         tools:visibility="gone" />
 
@@ -394,6 +397,7 @@
         android:id="@+id/group_main_dynamics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="button_main_ffff,button_main_fff,button_main_ff,button_main_forte,button_main_mf,button_main_mp,button_main_p,button_main_pp,button_main_ppp,button_main_pppp"
         tools:visibility="visible" />
 

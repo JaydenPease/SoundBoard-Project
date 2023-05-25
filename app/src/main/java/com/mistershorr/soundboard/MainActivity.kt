@@ -19,7 +19,6 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.attribute.BasicFileAttributes
-import java.util.function.BiPredicate
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,17 +40,11 @@ class MainActivity : AppCompatActivity() {
 
     private var selectedNoteType: Int = 4
 
-    private var noteTypeButtons: ArrayList<Button> = ArrayList<Button>()
-
-    private var dynamicButtons: ArrayList<Button> = ArrayList<Button>()
-
     var currentlyWriting: Boolean = false
 
     private var noteMap = HashMap<String, Int>()
 
     private var listOfSavedSongs: ArrayList<String> = ArrayList<String>()
-
-    private var groupList: ArrayList<Group> = ArrayList<Group>()
 
     private var areSongsDisplayed: Boolean = false
 
@@ -65,6 +58,12 @@ class MainActivity : AppCompatActivity() {
 
     private var redone: Boolean = false
 
+    private lateinit var selectedDurationButton: Button
+
+    private lateinit var selectedDynamicButton: Button
+
+    private lateinit var selectedGroup: Group
+
     private val soundBoardListener = SoundBoardListener()
 
 
@@ -74,42 +73,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
-        loadNoteTypeButtonsArray()
-        loadDynamicButtonsArray()
-
-        loadGroupList()
-
-        for(i in groupList.indices) {
-            groupList[i].visibility = View.GONE
-        }
-        binding.groupMainNotes.visibility = View.VISIBLE
+        loadDefaultSelectedButtons()
 
         initializeSoundPool()
 
         setListeners()
-
-
     }
 
+    private fun loadDefaultSelectedButtons() {
+        selectedDurationButton = binding.buttonMainQuarterNote
+        selectedDynamicButton = binding.buttonMainMf
+        selectedGroup = binding.groupMainNotes
+    }
 
     private fun initializeSoundPool() {
 
         this.volumeControlStream = AudioManager.STREAM_MUSIC
         soundPool = SoundPool(10, AudioManager.STREAM_MUSIC, 0)
-//        soundPool.setOnLoadCompleteListener(SoundPool.OnLoadCompleteListener { soundPool, sampleId, status ->
-//           // isSoundPoolLoaded = true
-//        })
 
         loadSoundPoolThingy1()
 
         loadSoundPoolThingy2()
 
     }
-
-
 
     private fun playNote(note: String, volume: Float) {
         // ?: is the elvis operator. it lets you provide a default value if the value is null
@@ -663,6 +649,7 @@ class MainActivity : AppCompatActivity() {
                                     playNote("rest", writingVolume)
                                     delay(500)
                                     playSong(song)
+                                    song = ArrayList<Note>()
                                 }
                             } else {
                                 GlobalScope.launch {
@@ -715,10 +702,6 @@ class MainActivity : AppCompatActivity() {
                 //to play the note, you need the corresponding soundPool object
            //delay for the delay
     }
-
-
-
-
 
     private fun loadSong() {
 
@@ -1065,25 +1048,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setRightHandMenuButtonListeners() {
         binding.buttonMainDurationSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList[i].visibility = View.GONE
-            }
+            selectedGroup.visibility = View.GONE
             binding.groupMainDurations.visibility = View.VISIBLE
+            selectedGroup = binding.groupMainDurations
             areSongsDisplayed = false
         }
         binding.buttonMainNoteSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList[i].visibility = View.GONE
-            }
+            selectedGroup.visibility = View.GONE
             binding.groupMainNotes.visibility = View.VISIBLE
+            selectedGroup = binding.groupMainNotes
             areSongsDisplayed = false
         }
 
         binding.buttonMainDynamicSelection.setOnClickListener {
-            for(i in groupList.indices) {
-                groupList[i].visibility = View.GONE
-            }
+            selectedGroup.visibility = View.GONE
             binding.groupMainDynamics.visibility = View.VISIBLE
+            selectedGroup = binding.groupMainDynamics
             areSongsDisplayed = false
         }
 
@@ -1173,40 +1153,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setNoteTypeButtonColors(button: Button) {
-        for(i in noteTypeButtons.indices) {
-            noteTypeButtons[i].setBackgroundColor(Color.rgb(110, 0, 248))
-        }
+        selectedDurationButton.setBackgroundColor(Color.rgb(110, 0, 248))
         button.setBackgroundColor(Color.rgb(0, 200, 0))
-    }
-
-    private fun loadNoteTypeButtonsArray() {
-        noteTypeButtons.add(binding.buttonMainWholeNote)
-        noteTypeButtons.add(binding.buttonMainHalfNote)
-        noteTypeButtons.add(binding.buttonMainQuarterNote)
-        noteTypeButtons.add(binding.buttonMainEighthNote)
-        noteTypeButtons.add(binding.buttonMainSixteenthNote)
-        noteTypeButtons.add(binding.buttonMainThirtySecondNote)
-        noteTypeButtons.add(binding.buttonMainInstant)
+        selectedDurationButton = button
     }
 
     private fun setDynamicButtonColors(button: Button) {
-        for(i in dynamicButtons.indices) {
-            dynamicButtons[i].setBackgroundColor(Color.rgb(110, 0, 248))
-        }
+        selectedDynamicButton.setBackgroundColor(Color.rgb(110, 0, 248))
         button.setBackgroundColor(Color.rgb(0,200,0))
-    }
-
-    private fun loadDynamicButtonsArray() {
-        dynamicButtons.add(binding.buttonMainFfff)
-        dynamicButtons.add(binding.buttonMainFff)
-        dynamicButtons.add(binding.buttonMainFf)
-        dynamicButtons.add(binding.buttonMainForte)
-        dynamicButtons.add(binding.buttonMainMf)
-        dynamicButtons.add(binding.buttonMainMp)
-        dynamicButtons.add(binding.buttonMainP)
-        dynamicButtons.add(binding.buttonMainPp)
-        dynamicButtons.add(binding.buttonMainPpp)
-        dynamicButtons.add(binding.buttonMainPppp)
+        selectedDynamicButton = button
     }
 
     @SuppressLint("SetTextI18n")
@@ -1259,34 +1214,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveSong() {
 
-        val gson = Gson()
+        if(binding.editTextMainSongName.text.isNotBlank()) {
 
-        Log.d(TAG, songBeingWritten.toString())
-        val jsonArrayOfSong = gson.toJson(songBeingWritten)
+            val gson = Gson()
 
-        Log.d(TAG, jsonArrayOfSong.toString())
-        val songJsonString: String = jsonArrayOfSong.toString()
-        Log.d(TAG, songJsonString)
+            Log.d(TAG, songBeingWritten.toString())
+            val jsonArrayOfSong = gson.toJson(songBeingWritten)
+
+            Log.d(TAG, jsonArrayOfSong.toString())
+            val songJsonString: String = jsonArrayOfSong.toString()
+            Log.d(TAG, songJsonString)
 
 
-        //i forgot where i took this code from
-        try {
-            var output: Writer? = null
-            val file =
-                File(this.filesDir, binding.editTextMainSongName.text.toString() + ".json")
-            output = BufferedWriter(FileWriter(file))
-            output.write(songJsonString)
-            output.close()
-            Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
-            if(areSongsDisplayed) {
-                displayAllSongs()
+            //i forgot where i took this code from
+            try {
+                val output: Writer?
+                val file =
+                    File(this.filesDir, binding.editTextMainSongName.text.toString() + ".json")
+                output = BufferedWriter(FileWriter(file))
+                output.write(songJsonString)
+                output.close()
+                Toast.makeText(applicationContext, "Composition saved", Toast.LENGTH_LONG).show()
+                if (areSongsDisplayed) {
+                    displayAllSongs()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
             }
-        } catch (e: Exception) {
-            Toast.makeText(baseContext, e.message, Toast.LENGTH_LONG).show()
         }
 
     }
-
 
     private fun displayAllSongs() {
         listOfSavedSongs = ArrayList<String>()
@@ -1295,7 +1252,7 @@ class MainActivity : AppCompatActivity() {
         val dir = this.filesDir.toString()
         Files.find(
             Paths.get(dir), Int.MAX_VALUE,
-            BiPredicate { _, file: BasicFileAttributes -> file.isRegularFile }
+            { _, file: BasicFileAttributes -> file.isRegularFile }
         ).use { paths -> paths.forEach {
             Log.d(TAG, it.toString())
             listOfSavedSongs.add(it.toString())
@@ -1307,22 +1264,16 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, listOfSavedSongs[i])
         }
 
-        for(i in groupList.indices) {
-            groupList[i].visibility = View.GONE
+        if(selectedGroup != binding.groupMainSongDisplay) {
+            selectedGroup.visibility = View.GONE
+            binding.groupMainSongDisplay.visibility = View.VISIBLE
+            selectedGroup = binding.groupMainSongDisplay
         }
-        binding.groupMainSongDisplay.visibility = View.VISIBLE
 
         binding.textViewMainDisplayedSongs.text = listOfSavedSongs.toString()
 
         areSongsDisplayed = true
 
-    }
-
-    private fun loadGroupList() {
-        groupList.add(binding.groupMainNotes)
-        groupList.add(binding.groupMainDurations)
-        groupList.add(binding.groupMainSongDisplay)
-        groupList.add(binding.groupMainDynamics)
     }
 
     private fun deleteSong() {
